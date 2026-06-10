@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 31, 2026 at 10:11 AM
+-- Generation Time: Jun 10, 2026 at 05:36 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -95,6 +95,13 @@ CREATE TABLE `employee` (
   `ShopID` int(11) NOT NULL,
   `Position` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `employee`
+--
+
+INSERT INTO `employee` (`UserID`, `ShopID`, `Position`) VALUES
+(2, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -189,7 +196,10 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`RoleID`, `RoleName`) VALUES
-(1, 'admin');
+(1, 'admin'),
+(2, 'employee'),
+(3, 'member'),
+(4, 'owner');
 
 -- --------------------------------------------------------
 
@@ -220,6 +230,13 @@ CREATE TABLE `shop` (
   `Status` tinyint(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `shop`
+--
+
+INSERT INTO `shop` (`ShopID`, `OwnerID`, `ShopName`, `Description`, `Logo`, `Status`) VALUES
+(1, 4, 'Shop quần áo', NULL, NULL, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -235,15 +252,19 @@ CREATE TABLE `user` (
   `Image` varchar(255) DEFAULT NULL,
   `Phone` varchar(20) DEFAULT NULL,
   `Address` varchar(255) DEFAULT NULL,
-  `Status` tinyint(4) DEFAULT NULL
+  `Status` tinyint(4) DEFAULT NULL,
+  `LoginCount` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`UserID`, `RoleID`, `UserName`, `Email`, `Password`, `Image`, `Phone`, `Address`, `Status`) VALUES
-(1, 1, 'tranchivinh', 'vinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, NULL);
+INSERT INTO `user` (`UserID`, `RoleID`, `UserName`, `Email`, `Password`, `Image`, `Phone`, `Address`, `Status`, `LoginCount`) VALUES
+(1, 1, 'tranchivinh', 'vinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 1),
+(2, 2, 'nguyenthuydanchinh', 'chinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 2),
+(3, 3, 'nguyenhoangvu', 'vu@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 0),
+(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 0);
 
 --
 -- Indexes for dumped tables
@@ -413,7 +434,7 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `RoleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `RoleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `seller_request`
@@ -425,13 +446,13 @@ ALTER TABLE `seller_request`
 -- AUTO_INCREMENT for table `shop`
 --
 ALTER TABLE `shop`
-  MODIFY `ShopID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ShopID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
