@@ -22,4 +22,30 @@ class User
 
         return $result->fetch_assoc();
     }
+
+    public function updatePassword($userid, $newpassword)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "update user set Password = '$newpassword' where UserID = $userid";
+        return $conn->query($sql);
+    }
+
+    public function mupdateCountLogin($userid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "update user set LoginCount = LoginCount + 1  where UserID = $userid";
+        return $conn->query($sql);
+    }
 }

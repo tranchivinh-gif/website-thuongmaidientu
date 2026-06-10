@@ -35,4 +35,37 @@ class UserCtrl
             "user" => $user
         ];
     }
+
+    public function confirmPassword($password, $repassword)
+    {
+        if ($password == $repassword) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function changePassword($userid, $newpassword)
+    {
+        $userModel = new User();
+        $result = $userModel->updatePassword($userid, md5($newpassword));
+
+        if (!$result) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function cupdateCountLogin($userid)
+    {
+        $userModel = new User();
+        $result = $userModel->mupdateCountLogin($userid);
+
+        if (!$result) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

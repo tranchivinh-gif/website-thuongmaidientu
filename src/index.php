@@ -84,6 +84,22 @@ session_start();
                 if (isset($_REQUEST["login"])) {
                     include_once __DIR__ . "/view/vlogin.php";
                 }
+
+                if (isset($_REQUEST["employee"])) {
+                    include_once __DIR__ . "/view/vemployee.php";
+                }
+
+                if (isset($_REQUEST["admin"])) {
+                    include_once __DIR__ . "/view/vadmin.php";
+                }
+
+                if (isset($_REQUEST["home"])) {
+                    include_once __DIR__ . "/view/vmember.php";
+                }
+
+                if (isset($_REQUEST["vchangepassword"])) {
+                    include_once __DIR__ . "/view/vchangepassword.php";
+                }
                 ?>
             </div>
         </div>
