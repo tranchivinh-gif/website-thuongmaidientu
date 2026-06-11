@@ -1,0 +1,49 @@
+        .container {
+            width: 1200px;
+            margin: auto;
+            border: 1px solid black;
+        }
+
+        .header {
+            display: flex;
+            border-bottom: 1px solid black;
+        }
+
+        .nav {
+            width: 60%;
+        }
+
+        .nav ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav a {
+            text-decoration: none;
+        }
+
+        .search {
+            width: 40%;
+            align-self: center;
+            justify-items: end;
+            margin-right: 20px;
+        }
+
+        .section {
+            display: flex;
+        }
+
+        .left {
+            width: 30%;
+            border-right: 1px solid black;
+        }
+
+        .right {
+            width: 70%;
+        }
+
+        .footer {
+            text-align: center;
+            border-top: 1px solid black;
+        }
