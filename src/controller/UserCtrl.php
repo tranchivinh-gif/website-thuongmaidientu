@@ -4,6 +4,7 @@ include_once __DIR__ . "/../model/User.php";
 
 class UserCtrl
 {
+    //hàm xử lý đăng nhập
     public function clogin($email, $password)
     {
         $userModel = new User();
@@ -36,6 +37,7 @@ class UserCtrl
         ];
     }
 
+    // hàm so sánh password và repassword
     public function confirmPassword($password, $repassword)
     {
         if ($password == $repassword) {
@@ -45,6 +47,8 @@ class UserCtrl
         }
     }
 
+
+    // hàm gọi model update mật khẩu
     public function changePassword($userid, $newpassword)
     {
         $userModel = new User();
@@ -57,6 +61,7 @@ class UserCtrl
         }
     }
 
+    // hàm gọi model xử lý số lần đăng nhập
     public function cupdateCountLogin($userid)
     {
         $userModel = new User();
