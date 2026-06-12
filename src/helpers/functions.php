@@ -1,5 +1,4 @@
 <?php
-
 // hàm điều hướng
 function router()
 {
@@ -13,6 +12,11 @@ function router()
 
         case 'logout':
             handleLogout();
+            break;
+
+        case 'signup':
+            handleSignup();
+            include_once __DIR__ . "/../view/vsingup.php";
             break;
 
         case 'employee':
@@ -48,6 +52,26 @@ function router()
 
         default:
             echo 'trang home';
+    }
+}
+
+// hàm xử lý đăng ký
+function handleSignup()
+{
+    if (isset($_POST["btnsingup"])) {
+        include_once __DIR__ . "/../controller/UserCtrl.php";
+        $userCtrl = new UserCtrl();
+
+        if (!$userCtrl->checkExistEmail($_POST["txtemail"])) {
+            echo '<script>alert("Email này đã được đăng ký!");</script>';
+            return;
+        }
+
+        $result = $userCtrl->createNewUser(intval($_POST["slcrole"]), $_POST["txtfullname"], $_POST["txtemail"], $_POST["txtpassword"]);
+        echo '<script>
+                alert("' . $result . '");
+                window.location.href="?page=login";
+              </script>';
     }
 }
 
@@ -104,11 +128,11 @@ function handleLogin()
 
         if ($resultlogin["message"] == "locked") {
             echo '<script>alert("Tài khoản đã bị khóa!");</script>';
+            return;
         } else {
             echo '<script>alert("Email hoặc mật khẩu không chính xác!");</script>';
+            return;
         }
-
-        exit();
     }
 
     $resultupdatecountlogin = $userCtrl->cupdateCountLogin(

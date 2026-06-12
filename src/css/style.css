@@ -47,3 +47,7 @@
             text-align: center;
             border-top: 1px solid black;
         }
+
+        .formlogin a{
+            text-decoration: none;
+        }

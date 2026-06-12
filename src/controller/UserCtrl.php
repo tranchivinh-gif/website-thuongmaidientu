@@ -73,4 +73,28 @@ class UserCtrl
             return true;
         }
     }
+
+    // hàm kiểm tra email tồn tại chưa
+    public function checkExistEmail($email)
+    {
+        $userModel = new User();
+        $result = $userModel->getEmailByEmail($email);
+        if ($result > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // hàm tạo người dùng mới
+    public function createNewUser($RoleID, $UserName, $Email, $Password)
+    {
+        $userModel = new User();
+        $result = $userModel->insertNewUser($RoleID, $UserName, $Email, md5($Password));
+        if (!$result) {
+            return "Đăng ký thất bại!";
+        } else {
+            return "Đăng ký thành công!";
+        }
+    }
 }
