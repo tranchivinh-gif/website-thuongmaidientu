@@ -23,6 +23,32 @@ class User
         return $result->fetch_assoc();
     }
 
+    public function getEmailByEmail($email)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "select Email from user where Email = '$email'";
+        return $conn->query($sql)->num_rows;
+    }
+
+    public function insertNewUser($RoleID, $UserName, $Email, $Password)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "insert into user (RoleID,UserName,Email,Password) values($RoleID,'$UserName','$Email','$Password')";
+        return $conn->query($sql);
+    }
+
     public function updatePassword($userid, $newpassword)
     {
         $db = new Database();
