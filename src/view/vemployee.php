@@ -1,4 +1,1 @@
 trang employee
-<?php
-
-?>
