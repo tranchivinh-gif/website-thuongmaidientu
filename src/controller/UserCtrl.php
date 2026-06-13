@@ -98,6 +98,7 @@ class UserCtrl
         }
     }
 
+    // hàm lấy ShopID để gắn vào session lúc đăng nhập
     public function getShopIDToSession($userid)
     {
         $userModel = new User();
