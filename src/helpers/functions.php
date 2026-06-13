@@ -60,7 +60,7 @@ function router()
 
             break;
         default:
-            echo 'trang home';
+            renderProduct();
     }
 }
 
@@ -365,4 +365,34 @@ function rederCategoryProduct()
     foreach ($result["categorylist"] as $p) {
         echo '<option value="' . $p["CategoryID"] . '">' . $p["CategoryName"] . '</option>';
     }
+}
+
+// hàm render sản phẩm ra màn hình
+function renderProduct()
+{
+    include_once __DIR__ . "/../controller/ProductCtrl.php";
+
+    $productCtrl = new ProductCtrl();
+    $response = $productCtrl->getAllProduct();
+
+    if (!$response["success"]) {
+        echo $response["message"];
+        return;
+    }
+
+    $products = $response["productlist"];
+
+    echo '<div class="product-grid">';
+
+    foreach ($products as $p) {
+        echo '<div class="product-card"><a href="?page=product-detail/' . $p['ProductID'] . '">';
+        echo '<img src="/img/' . $p['Image'] . '" alt="">';
+        echo '<h3>' . $p['ProductName'] . '</h3>';
+        echo '<p>Giá: <s>' . number_format($p['Price'], 0, ',', '.') . '</s> vnđ</p>';
+        echo '<p>Giảm còn: ' . number_format($p['Discount'], 0, ',', '.') . ' vnđ</p>';
+        echo '<p>' . $p['Description'] . '</p>';
+        echo '</a></div>';
+    }
+
+    echo '</div>';
 }

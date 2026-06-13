@@ -93,4 +93,24 @@ class Product
 
         return $data;
     }
+
+    public function getAllProduct()
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+        $sql = "select * from product";
+        $result = $conn->query($sql);
+
+        $data = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
 }

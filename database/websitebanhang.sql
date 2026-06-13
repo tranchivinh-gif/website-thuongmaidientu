@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2026 at 11:57 AM
+-- Generation Time: Jun 13, 2026 at 02:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -179,8 +179,8 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`ProductID`, `CategoryID`, `ShopID`, `ProductName`, `Price`, `Discount`, `Description`, `Image`, `Stock`, `Status`) VALUES
-(1, 1, 1, 'Quần đùi', 200000.00, 155000.00, NULL, NULL, 100, 1),
-(6, 1, 1, 'ví dụ', 300000.00, 150000.00, '', '1-1781342819.png', 11, 1);
+(1, 1, 1, 'Quần đùi', 200000.00, 155000.00, '', 'vidu3.png', 100, 1),
+(2, 0, 1, 'ví dụ 2', 400000.00, 199000.00, '', 'vidu2.png', 99, 1);
 
 -- --------------------------------------------------------
 
@@ -277,10 +277,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`UserID`, `RoleID`, `UserName`, `Email`, `Password`, `Image`, `Phone`, `Address`, `Status`, `LoginCount`) VALUES
-(1, 1, 'tranchivinh', 'vinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 9),
-(2, 2, 'nguyenthuydanchinh', 'chinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 8),
+(1, 1, 'tranchivinh', 'vinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 10),
+(2, 2, 'nguyenthuydanchinh', 'chinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 16),
 (3, 3, 'nguyenhoangvu', 'vu@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 2),
-(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 21);
+(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 31);
 
 --
 -- Indexes for dumped tables
@@ -438,7 +438,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `review`

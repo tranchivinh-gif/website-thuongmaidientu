@@ -58,4 +58,22 @@ class ProductCtrl
             "categorylist" => $result
         ];
     }
+
+    public function getAllProduct()
+    {
+        $productModel = new Product();
+        $result = $productModel->getAllProduct();
+
+        if (count($result) == 0) {
+            return [
+                "success" => false,
+                "message" => "Chưa có sản phẩm nào!"
+            ];
+        }
+
+        return [
+            "success" => true,
+            "productlist" => $result
+        ];
+    }
 }

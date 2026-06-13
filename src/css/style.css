@@ -66,3 +66,49 @@
         .product-manager a{
             text-decoration: none;
         }
+
+
+        /* render Product  */
+        .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+
+    max-width: 1800px;
+    margin: auto;
+}
+
+.product-grid a{
+    text-decoration: none;
+    color: black;
+}
+
+.product-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+
+    text-align: center;
+
+    background: white;
+}
+
+.product-card img {
+    width: 160px;
+    height: 160px;
+
+
+    border-radius: 8px;
+}
+
+.product-card h3 {
+    margin: 10px 0;
+
+    font-size: 18px;
+}
+
+.product-card p {
+    margin: 5px 0;
+
+    font-size: 14px;
+}
