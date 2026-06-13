@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 10, 2026 at 05:36 PM
+-- Generation Time: Jun 13, 2026 at 11:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -56,6 +56,14 @@ CREATE TABLE `category_product` (
   `CategoryName` varchar(255) DEFAULT NULL,
   `Description` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `category_product`
+--
+
+INSERT INTO `category_product` (`CategoryID`, `CategoryName`, `Description`) VALUES
+(0, 'Chưa phân loại', NULL),
+(1, 'Thời trang', NULL);
 
 -- --------------------------------------------------------
 
@@ -159,12 +167,20 @@ CREATE TABLE `product` (
   `ShopID` int(11) DEFAULT NULL,
   `ProductName` varchar(255) DEFAULT NULL,
   `Price` decimal(18,2) DEFAULT NULL,
-  `Discount` decimal(5,2) DEFAULT NULL,
+  `Discount` decimal(18,2) DEFAULT NULL,
   `Description` varchar(500) DEFAULT NULL,
   `Image` varchar(255) DEFAULT NULL,
   `Stock` int(11) DEFAULT NULL,
   `Status` tinyint(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product`
+--
+
+INSERT INTO `product` (`ProductID`, `CategoryID`, `ShopID`, `ProductName`, `Price`, `Discount`, `Description`, `Image`, `Stock`, `Status`) VALUES
+(1, 1, 1, 'Quần đùi', 200000.00, 155000.00, NULL, NULL, 100, 1),
+(6, 1, 1, 'ví dụ', 300000.00, 150000.00, '', '1-1781342819.png', 11, 1);
 
 -- --------------------------------------------------------
 
@@ -245,14 +261,14 @@ INSERT INTO `shop` (`ShopID`, `OwnerID`, `ShopName`, `Description`, `Logo`, `Sta
 
 CREATE TABLE `user` (
   `UserID` int(11) NOT NULL,
-  `RoleID` int(11) DEFAULT NULL,
+  `RoleID` int(11) DEFAULT 3,
   `UserName` varchar(255) DEFAULT NULL,
   `Email` varchar(255) DEFAULT NULL,
   `Password` varchar(255) DEFAULT NULL,
   `Image` varchar(255) DEFAULT NULL,
   `Phone` varchar(20) DEFAULT NULL,
   `Address` varchar(255) DEFAULT NULL,
-  `Status` tinyint(4) DEFAULT NULL,
+  `Status` tinyint(4) DEFAULT 1,
   `LoginCount` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -261,10 +277,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`UserID`, `RoleID`, `UserName`, `Email`, `Password`, `Image`, `Phone`, `Address`, `Status`, `LoginCount`) VALUES
-(1, 1, 'tranchivinh', 'vinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 1),
-(2, 2, 'nguyenthuydanchinh', 'chinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 2),
-(3, 3, 'nguyenhoangvu', 'vu@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 0),
-(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 0);
+(1, 1, 'tranchivinh', 'vinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 9),
+(2, 2, 'nguyenthuydanchinh', 'chinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 8),
+(3, 3, 'nguyenhoangvu', 'vu@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 2),
+(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 21);
 
 --
 -- Indexes for dumped tables
@@ -392,7 +408,7 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `category_product`
 --
 ALTER TABLE `category_product`
-  MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `comment`
@@ -422,7 +438,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `review`
@@ -452,7 +468,7 @@ ALTER TABLE `shop`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
