@@ -74,4 +74,18 @@ class User
         $sql = "update user set LoginCount = LoginCount + 1  where UserID = $userid";
         return $conn->query($sql);
     }
+
+
+    public function getShopID($userid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "select ShopID from shop where OwnerID = $userid";
+        return $conn->query($sql)->fetch_assoc();
+    }
 }

@@ -97,4 +97,11 @@ class UserCtrl
             return "Đăng ký thành công!";
         }
     }
+
+    public function getShopIDToSession($userid)
+    {
+        $userModel = new User();
+        $result = $userModel->getShopID($userid);
+        return $result["ShopID"];
+    }
 }

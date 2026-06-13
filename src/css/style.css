@@ -51,3 +51,18 @@
         .formlogin a{
             text-decoration: none;
         }
+
+        .product-manager{
+            border-collapse: collapse;
+            text-align: center;
+            margin: 10px 10px;
+            width: 97%;
+        }
+
+        .product-manager td, th{
+            border: 1px solid black;
+        }
+
+        .product-manager a{
+            text-decoration: none;
+        }
