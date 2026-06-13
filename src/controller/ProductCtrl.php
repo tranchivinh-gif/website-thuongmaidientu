@@ -5,10 +5,10 @@ include_once __DIR__ . "/../model/Product.php";
 class ProductCtrl
 {
     // hàm lấy sản phẩm để quản lý
-    public function getProductToManage($userid)
+    public function getProductToManage($shopid)
     {
         $productModel = new Product();
-        $result = $productModel->getAllProductByShopId($userid);
+        $result = $productModel->getAllProductByShopId($shopid);
         if (!$result) {
             return [
                 "success" => false,
@@ -29,6 +29,7 @@ class ProductCtrl
         ];
     }
 
+    // hàm thêm sản phẩm
     public function addNewProduct($data)
     {
         if (empty($data)) {
@@ -40,6 +41,7 @@ class ProductCtrl
         return $productModel->insertProduct($data);
     }
 
+    // hàm lấy tất cả loại sản phẩm
     public function getAllCategoryProduct()
     {
         $productModel = new Product();

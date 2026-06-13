@@ -170,13 +170,15 @@ function handleLogin()
                     window.location.href="?page=vchangepassword";
                   </script>';
         } else {
+            $_SESSION["shopid"]  = $userCtrl->getShopIDToSession($_SESSION["user"]["UserID"]);
+            // die($_SESSION["shopid"]);
             echo '<script>
                     alert("Chào mừng nhân viên!");
                     window.location.href="?page=employee";
                   </script>';
         }
     } elseif ($_SESSION["user"]["RoleID"] == 4) {
-        $_SESSION["shopid"]  = $userCtrl->getShopIDToSession($_SESSION["user"]["RoleID"]);
+        $_SESSION["shopid"]  = $userCtrl->getShopIDToSession($_SESSION["user"]["UserID"]);
         echo '<script>
                 alert("Chào mừng chủ cửa hàng!");
                 window.location.href="?page=ownershop";
@@ -238,12 +240,13 @@ function displayMenu()
     echo '<li><a href="?page=logout">Đăng xuất</a></li>';
 }
 
+// hàm render sản phẩm trang quản lý 
 function renderProductMager()
 {
 
     include_once __DIR__ . "/../controller/ProductCtrl.php";
     $productCtrl = new ProductCtrl();
-    $result = $productCtrl->getProductToManage($_SESSION["user"]["UserID"]);
+    $result = $productCtrl->getProductToManage($_SESSION["shopid"]);
 
     if (!$result["success"]) {
         echo $result["message"];
@@ -262,6 +265,7 @@ function renderProductMager()
     }
 }
 
+// hàm xử lý quá trình thêm sản phẩm
 function handleAddProduct()
 {
     if (isset($_POST["btnadd"])) {
@@ -303,6 +307,7 @@ function handleAddProduct()
     }
 }
 
+// hàm xử lý và upload ảnh
 function uploadProductImage($shopid)
 {
     if (
@@ -314,7 +319,6 @@ function uploadProductImage($shopid)
 
     $file = $_FILES["txtimage"];
 
-    // kiểm tra định dạng
     $allow = ["jpg", "jpeg", "png", "webp"];
 
     $ext = strtolower(
@@ -325,7 +329,6 @@ function uploadProductImage($shopid)
         return false;
     }
 
-    // thư mục lưu
     $folder = "./img/";
 
     if (!is_dir($folder)) {
@@ -348,6 +351,7 @@ function uploadProductImage($shopid)
     return false;
 }
 
+// hàm render lựa chọn danh mục sản phẩm
 function rederCategoryProduct()
 {
     include_once __DIR__ . "/../controller/ProductCtrl.php";

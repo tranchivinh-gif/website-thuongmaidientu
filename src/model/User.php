@@ -4,6 +4,7 @@ include_once __DIR__ . "/Database.php";
 
 class User
 {
+    // hàm lấy user bởi Email
     public function getUserByEmail($email)
     {
         $db = new Database();
@@ -23,6 +24,7 @@ class User
         return $result->fetch_assoc();
     }
 
+    // hàm lấy mỗi email bằng email
     public function getEmailByEmail($email)
     {
         $db = new Database();
@@ -36,6 +38,7 @@ class User
         return $conn->query($sql)->num_rows;
     }
 
+    // hàm thêm User vào database
     public function insertNewUser($RoleID, $UserName, $Email, $Password)
     {
         $db = new Database();
@@ -49,6 +52,7 @@ class User
         return $conn->query($sql);
     }
 
+    // hàm đổi mật khẩu trong database
     public function updatePassword($userid, $newpassword)
     {
         $db = new Database();
@@ -62,6 +66,7 @@ class User
         return $conn->query($sql);
     }
 
+    // hàm cập nhật số lần đăng nhập của user
     public function mupdateCountLogin($userid)
     {
         $db = new Database();
@@ -75,7 +80,7 @@ class User
         return $conn->query($sql);
     }
 
-
+    // hàm lấy ShopID bằng userid
     public function getShopID($userid)
     {
         $db = new Database();
@@ -85,7 +90,7 @@ class User
             die("Lỗi kết nối database!");
         }
 
-        $sql = "select ShopID from shop where OwnerID = $userid";
+        $sql = "select s.ShopID from shop s join employee e on s.ShopID=e.ShopID where s.OwnerID = $userid or e.UserID = $userid";
         return $conn->query($sql)->fetch_assoc();
     }
 }

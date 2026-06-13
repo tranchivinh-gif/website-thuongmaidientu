@@ -5,7 +5,7 @@ include_once __DIR__ . "/Database.php";
 class Product
 {
     // hàm lấy sản phẩm để quản lý theo chủ shop userid
-    public function getAllProductByShopId($userid)
+    public function getAllProductByShopId($shopid)
     {
         $db = new Database();
         $conn = $db->moKetNoi();
@@ -13,8 +13,7 @@ class Product
         if (!$conn) {
             die("Lỗi kết nối database!");
         }
-        // select pd.*, s.ShopID, s.OwnerID, s.ShopName from product pd join shop s on pd.ShopID = s.ShopID where s.ShopID = 1 && s.OwnerID = 4
-        $sql = "select pd.*, s.ShopID, s.OwnerID from product pd join shop s on pd.ShopID = s.ShopID where s.OwnerID = $userid";
+        $sql = "select pd.*, s.ShopID, s.OwnerID from product pd join shop s on pd.ShopID = s.ShopID where pd.ShopID = $shopid";
         $result = $conn->query($sql);
 
         if (!$result) {
@@ -30,6 +29,7 @@ class Product
         return $data;
     }
 
+    // hàm thêm sản phẩm vào database
     public function insertProduct($data)
     {
         $db = new Database();
@@ -73,6 +73,7 @@ class Product
         return false;
     }
 
+    // hàm lấy tất cả danh mục sản phẩm
     public function getAllCategoryProduct()
     {
         $db = new Database();
