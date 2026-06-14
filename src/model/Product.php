@@ -94,6 +94,7 @@ class Product
         return $data;
     }
 
+    // hàm lấy tất cả sản phẩm
     public function getAllProduct()
     {
         $db = new Database();
@@ -112,5 +113,56 @@ class Product
         }
 
         return $data;
+    }
+
+    // hàm lấy sẩn phẩm bằng productid
+    public function getProductByID($productid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "select * from product where ProductID = $productid";
+        $result = $conn->query($sql);
+
+        if (!$result) {
+            return null;
+        }
+        return $result->fetch_assoc();
+    }
+
+    // hàm cập nhật sản phẩm 
+    public function updateProduct($data)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "update product
+            set
+                CategoryID = $data[categoryid],
+                ShopID = $data[shopid],
+                ProductName = '$data[productname]',
+                Price = $data[price],
+                Discount = $data[discount],
+                Description = '$data[description]',
+                Image = '$data[image]',
+                Stock = $data[stock],
+                Status = $data[status]
+            where ProductID = $data[productid]";
+
+        $result = $conn->query($sql);
+
+        if ($result) {
+            return $result;
+        }
+
+        return false;
     }
 }

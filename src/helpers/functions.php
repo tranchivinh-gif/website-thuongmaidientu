@@ -1,4 +1,5 @@
 <?php
+
 // hàm điều hướng
 function router()
 {
@@ -57,8 +58,17 @@ function router()
         case 'add-product':
             handleAddProduct();
             include_once __DIR__ . "/../view/vaddproduct.php";
-
             break;
+
+        case 'edit-product':
+            include_once __DIR__ . "/../view/veditproduct.php";
+
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
+                handleUpdateProduct($productid, $product["Image"]);
+                exit;
+            }
+            break;
+
         default:
             renderProduct();
     }
@@ -171,7 +181,6 @@ function handleLogin()
                   </script>';
         } else {
             $_SESSION["shopid"]  = $userCtrl->getShopIDToSession($_SESSION["user"]["UserID"]);
-            // die($_SESSION["shopid"]);
             echo '<script>
                     alert("Chào mừng nhân viên!");
                     window.location.href="?page=employee";
@@ -260,7 +269,7 @@ function renderProductMager()
         echo '<td>' . number_format($p['Discount'], 0, ',', '.') . '</td>';
         echo '<td>' . $p['Stock'] . '</td>';
         echo '<td>' . ($p['Status'] == 1 ? 'Đang bán' : 'Ngừng bán') . '</td>';
-        echo '<td><a href="?page=edit-product=' . $p['ProductID'] . '">sửa</a> | <a href="?page=del-product=' . $p['ProductID'] . '">xóa</a></td>';
+        echo '<td><a href="?page=edit-product&id=' . $p['ProductID'] . '">sửa</a> | <a href="?page=del-product&id=' . $p['ProductID'] . '">xóa</a></td>';
         echo '</tr>';
     }
 }
@@ -278,7 +287,7 @@ function handleAddProduct()
         $handledImage = uploadProductImage($_SESSION["shopid"]);
 
         if ($handledImage === false) {
-            echo "Ảnh không hợp lệ hoặc upload thất bại";
+            echo '<script>alert("Ảnh không hợp lệ hoặc upload thất bại");</script>';
             return;
         }
 
@@ -300,20 +309,33 @@ function handleAddProduct()
         $result = $productCtrl->addNewProduct($data);
 
         if ($result) {
-            echo "Thêm sản phẩm thành công";
+            echo '<script>alert("Thêm sản phẩm thành công");window.location.href="?page=product-manager";</script>';
         } else {
-            echo "Thêm sản phẩm thất bại";
+            echo '<script>alert("Thêm sản phẩm thất bại");</script>';
         }
     }
 }
 
 // hàm xử lý và upload ảnh
-function uploadProductImage($shopid)
+function uploadProductImage($shopid, $fileimage = '')
 {
-    if (
-        !isset($_FILES["txtimage"]) ||
-        $_FILES["txtimage"]["error"] != 0
-    ) {
+    $folder = "./img/";
+
+    $hasUpload =
+        isset($_FILES["txtimage"]) &&
+        $_FILES["txtimage"]["error"] === 0;
+
+    // không upload ảnh
+    if (!$hasUpload) {
+
+        // update → giữ ảnh cũ
+        if ($fileimage !== '') {
+            return [
+                "filename" => $fileimage
+            ];
+        }
+
+        // add mới → bắt buộc có ảnh
         return false;
     }
 
@@ -329,41 +351,61 @@ function uploadProductImage($shopid)
         return false;
     }
 
-    $folder = "./img/";
-
+    // tạo thư mục nếu chưa có
     if (!is_dir($folder)) {
         mkdir($folder, 0777, true);
     }
 
-    // đặt tên: idshop-time()
+    // tạo tên ảnh
     $imageName = $shopid . "-" . time() . "." . $ext;
 
     $path = $folder . $imageName;
 
-    if (move_uploaded_file($file["tmp_name"], $path)) {
-
-        return [
-            "filename" => $imageName,
-            "path" => "/img/" . $imageName
-        ];
+    if (!move_uploaded_file($file["tmp_name"], $path)) {
+        return false;
     }
 
-    return false;
+    // xóa ảnh cũ sau khi upload thành công
+    if ($fileimage !== '') {
+        $old = $folder . $fileimage;
+
+        if (file_exists($old)) {
+            unlink($old);
+        }
+    }
+
+    return [
+        "filename" => $imageName
+    ];
 }
 
-// hàm render lựa chọn danh mục sản phẩm
-function rederCategoryProduct()
+// hàm render danh sách danh mục sản phẩm
+function rederCategoryProduct($selectedCategoryID = null)
 {
     include_once __DIR__ . "/../controller/ProductCtrl.php";
+
     $productCtrl = new ProductCtrl();
+
     $result = $productCtrl->getAllCategoryProduct();
 
     if (!$result["success"]) {
         echo $result["message"];
+        return;
     }
 
     foreach ($result["categorylist"] as $p) {
-        echo '<option value="' . $p["CategoryID"] . '">' . $p["CategoryName"] . '</option>';
+
+        $selected =
+            ($selectedCategoryID == $p["CategoryID"])
+            ? 'selected'
+            : '';
+
+        echo '
+        <option
+            value="' . $p["CategoryID"] . '"
+            ' . $selected . '>' . $p["CategoryName"] . '
+
+        </option>';
     }
 }
 
@@ -385,14 +427,101 @@ function renderProduct()
     echo '<div class="product-grid">';
 
     foreach ($products as $p) {
+        // Không hiển thị sản phẩm ngừng bán
+        if ($p['Status'] == 0) {
+            continue;
+        }
+
         echo '<div class="product-card"><a href="?page=product-detail/' . $p['ProductID'] . '">';
         echo '<img src="/img/' . $p['Image'] . '" alt="">';
         echo '<h3>' . $p['ProductName'] . '</h3>';
-        echo '<p>Giá: <s>' . number_format($p['Price'], 0, ',', '.') . '</s> vnđ</p>';
-        echo '<p>Giảm còn: ' . number_format($p['Discount'], 0, ',', '.') . ' vnđ</p>';
+        if ($p['Discount'] == 0) {
+            echo '<p>Giá: ' . number_format($p['Price'], 0, ',', '.') . ' vnđ</p>';
+        } else {
+            echo '<p>Giá: <s>' . number_format($p['Price'], 0, ',', '.') . '</s> vnđ</p>';
+            echo '<p>Giảm còn: ' . number_format($p['Discount'], 0, ',', '.') . ' vnđ</p>';
+        }
         echo '<p>' . $p['Description'] . '</p>';
         echo '</a></div>';
     }
 
     echo '</div>';
+}
+
+// hàm lấy thông tin 1 sản phẩm để chỉnh sửa
+function getProductForEdit($productid)
+{
+    if (!isset($productid)) {
+        return null;
+    }
+
+    include_once __DIR__ . "/../controller/ProductCtrl.php";
+
+    $productCtrl = new ProductCtrl();
+
+    $response = $productCtrl->getProductByID($_GET["id"]);
+
+    if (!$response["success"]) {
+        return null;
+    }
+
+    return $response["product"];
+}
+
+// hàm xử lý cập nhật sản phẩm
+function handleUpdateProduct($productid, $fileimage)
+{
+    if (isset($_POST["btnupdate"])) {
+        include_once __DIR__ . "/../controller/ProductCtrl.php";
+
+        $productCtrl = new ProductCtrl();
+
+        // xử lý ảnh
+        $handledImage = uploadProductImage($_SESSION["shopid"], $fileimage);
+
+        if ($handledImage === false) {
+            echo '<script>alert("Ảnh không hợp lệ hoặc upload thất bại");</script>';
+            return;
+        }
+
+        $data = [
+            "productid" => $productid,
+            "categoryid" => $_POST["txtcategoryid"],
+            "shopid" => $_SESSION["shopid"],
+            "productname" => $_POST["txtproductname"],
+            "price" => $_POST["txtprice"],
+            "discount" => $_POST["txtdiscount"],
+            "description" => $_POST["txtdescription"],
+
+            // lưu tên ảnh vào DB
+            "image" => $handledImage["filename"],
+
+            "stock" => $_POST["txtstock"],
+            "status" => $_POST["txtstatus"]
+        ];
+
+        $result = $productCtrl->updateProduct($data);
+
+        if ($result) {
+            echo '<script>alert("Cập nhật sản phẩm thành công");window.location.href="?page=product-manager";</script>';
+        } else {
+            echo '<script>alert("Cập nhật sản phẩm thất bại");</script>';
+        }
+    }
+}
+
+// hàm kiểm tra ảnh sản phẩm có trong thư mục và database chưa
+function getProductImage($filename)
+{
+    $default = "/img/default.jpg";
+
+    if (!empty($filename)) {
+        $path = __DIR__ . "/../img/" . $filename;
+
+        if (file_exists($path)) {
+            return "/img/" . $filename;
+        }
+    }
+
+    return $default;
 }

@@ -43,3 +43,16 @@ function validateSignupForm(){
     }
 }
 
+// hàm kiểm tra giữa giá gốc và giá giảm khi nhập
+function validatePrice() {
+    let price = Number(document.getElementsByName("txtprice")[0].value);
+    let discount = Number(document.getElementsByName("txtdiscount")[0].value);
+
+    if (discount > 0 && discount >= price) {
+        alert("Giá bán phải nhỏ hơn giá");
+        return false;
+    }
+
+    return true;
+}
+
