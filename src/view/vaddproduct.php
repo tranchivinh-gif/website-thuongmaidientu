@@ -1,4 +1,4 @@
-<form action="?page=add-product" method="POST" enctype="multipart/form-data">
+<form action="?page=add-product" method="POST" enctype="multipart/form-data" onsubmit="return validatePrice()">
     <table>
         <tr>
             <td>Loại sản phẩm</td>
@@ -26,7 +26,7 @@
         </tr>
         <tr>
             <td>Hình ảnh</td>
-            <td><input type="file" name="txtimage"></td>
+            <td><input type="file" name="txtimage" required></td>
         </tr>
         <tr>
             <td>Số lượng tồn</td>
@@ -41,7 +41,9 @@
         </tr>
         <tr>
             <td></td>
-            <td><button type="submit" name="btnadd">Thêm</button> <button type="reset">Nhập lại</button></td>
+            <td><button type="submit" name="btnadd">Thêm</button>
+                <button type="reset">Nhập lại</buttontype=>
+            </td>
         </tr>
     </table>
 </form>

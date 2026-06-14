@@ -59,6 +59,7 @@ class ProductCtrl
         ];
     }
 
+    // hàm lấy tất cả sản phẩm
     public function getAllProduct()
     {
         $productModel = new Product();
@@ -75,5 +76,36 @@ class ProductCtrl
             "success" => true,
             "productlist" => $result
         ];
+    }
+
+    // hàm lấy sản phẩm bằng productid
+    public function getProductByID($productid)
+    {
+        $productModel = new Product();
+        $result = $productModel->getProductByID($productid);
+
+        if ($result === null) {
+            return [
+                "success" => false,
+                "message" => "Sản phẩm không tồn tại!"
+            ];
+        }
+
+        return [
+            "success" => true,
+            "product" => $result
+        ];
+    }
+
+    // hàm cập nhật sản phẩm
+    public function updateProduct($data)
+    {
+        if (empty($data)) {
+            return false;
+        }
+
+        $productModel = new Product();
+
+        return $productModel->updateProduct($data);
     }
 }

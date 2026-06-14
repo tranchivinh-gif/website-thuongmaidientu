@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2026 at 02:58 PM
+-- Generation Time: Jun 14, 2026 at 04:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -167,9 +167,9 @@ CREATE TABLE `product` (
   `ShopID` int(11) DEFAULT NULL,
   `ProductName` varchar(255) DEFAULT NULL,
   `Price` decimal(18,2) DEFAULT NULL,
-  `Discount` decimal(18,2) DEFAULT NULL,
+  `Discount` decimal(18,2) DEFAULT 0.00,
   `Description` varchar(500) DEFAULT NULL,
-  `Image` varchar(255) DEFAULT NULL,
+  `Image` varchar(255) NOT NULL DEFAULT 'default.jpg',
   `Stock` int(11) DEFAULT NULL,
   `Status` tinyint(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -179,8 +179,9 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`ProductID`, `CategoryID`, `ShopID`, `ProductName`, `Price`, `Discount`, `Description`, `Image`, `Stock`, `Status`) VALUES
-(1, 1, 1, 'Quần đùi', 200000.00, 155000.00, '', 'vidu3.png', 100, 1),
-(2, 0, 1, 'ví dụ 2', 400000.00, 199000.00, '', 'vidu2.png', 99, 1);
+(1, 1, 1, 'ví dụ 1', 99000.00, 87000.00, '', 'vidu1.png', 10, 1),
+(2, 0, 1, 'ví dụ 2', 190000.00, 99000.00, '', 'vidu2.png', 10, 1),
+(3, 0, 1, 'ví dụ 3', 199000.00, 100000.00, '', 'vidu3.png', 10, 1);
 
 -- --------------------------------------------------------
 
@@ -280,7 +281,7 @@ INSERT INTO `user` (`UserID`, `RoleID`, `UserName`, `Email`, `Password`, `Image`
 (1, 1, 'tranchivinh', 'vinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 10),
 (2, 2, 'nguyenthuydanchinh', 'chinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 16),
 (3, 3, 'nguyenhoangvu', 'vu@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 2),
-(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 31);
+(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 33);
 
 --
 -- Indexes for dumped tables
@@ -438,7 +439,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `review`
