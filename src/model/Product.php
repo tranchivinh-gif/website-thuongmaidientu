@@ -165,4 +165,25 @@ class Product
 
         return false;
     }
+
+    // hàm xóa sản phẩm bằng id
+    public function deleteProductByID($productid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "delete from product where ProductID = $productid";
+
+        $result = $conn->query($sql);
+
+        if ($result) {
+            return true;
+        }
+
+        return false;
+    }
 }

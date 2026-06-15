@@ -60,6 +60,10 @@ function router()
             include_once __DIR__ . "/../view/vaddproduct.php";
             break;
 
+        case 'del-product':
+            deleteProduct();
+            break;
+
         case 'edit-product':
             include_once __DIR__ . "/../view/veditproduct.php";
 
@@ -316,10 +320,25 @@ function handleAddProduct()
     }
 }
 
-// hàm xử lý và upload ảnh
-function uploadProductImage($shopid, $fileimage = '')
+// hàm xử lý upload / xóa ảnh
+function uploadProductImage($shopid = '', $fileimage = '', $action = 'upload')
 {
     $folder = "./img/";
+
+    // chế độ xóa ảnh
+    if ($action === "delete") {
+
+        if ($fileimage !== '') {
+
+            $old = $folder . $fileimage;
+
+            if (file_exists($old)) {
+                unlink($old);
+            }
+        }
+
+        return true;
+    }
 
     $hasUpload =
         isset($_FILES["txtimage"]) &&
@@ -335,7 +354,6 @@ function uploadProductImage($shopid, $fileimage = '')
             ];
         }
 
-        // add mới → bắt buộc có ảnh
         return false;
     }
 
@@ -351,12 +369,10 @@ function uploadProductImage($shopid, $fileimage = '')
         return false;
     }
 
-    // tạo thư mục nếu chưa có
     if (!is_dir($folder)) {
         mkdir($folder, 0777, true);
     }
 
-    // tạo tên ảnh
     $imageName = $shopid . "-" . time() . "." . $ext;
 
     $path = $folder . $imageName;
@@ -365,8 +381,9 @@ function uploadProductImage($shopid, $fileimage = '')
         return false;
     }
 
-    // xóa ảnh cũ sau khi upload thành công
+    // update → xóa ảnh cũ
     if ($fileimage !== '') {
+
         $old = $folder . $fileimage;
 
         if (file_exists($old)) {
@@ -524,4 +541,39 @@ function getProductImage($filename)
     }
 
     return $default;
+}
+
+// hàm xử lý xóa sản phẩm
+function deleteProduct()
+{
+    if (!isset($_GET["id"])) {
+        return;
+    }
+
+    include_once __DIR__ . "/../controller/ProductCtrl.php";
+
+    $productid = (int)$_GET["id"];
+
+    $productCtrl = new ProductCtrl();
+
+    // lấy thông tin sản phẩm
+    $product = getProductForEdit($productid);
+
+    if (!$product) {
+        return;
+    }
+
+    $result = $productCtrl->deleteProduct($productid);
+
+    if ($result) {
+
+        // gọi hàm ảnh để xóa
+        uploadProductImage('', $product["Image"], "delete");
+
+        echo "
+        <script>
+            alert('Xóa thành công');
+            window.location='?page=product-manager';
+        </script>";
+    }
 }

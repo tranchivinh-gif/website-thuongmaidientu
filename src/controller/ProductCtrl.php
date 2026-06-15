@@ -108,4 +108,12 @@ class ProductCtrl
 
         return $productModel->updateProduct($data);
     }
+
+    // hàm xóa sản phẩm
+    public function deleteProduct($productid)
+    {
+        $productModel = new Product();
+
+        return $productModel->deleteProductByID($productid);
+    }
 }
