@@ -116,4 +116,23 @@ class ProductCtrl
 
         return $productModel->deleteProductByID($productid);
     }
+
+    // hàm lấy chi tiết sản phẩm theo productid
+    public function getProductDetail($productid)
+    {
+        $productModel = new Product();
+        $product = $productModel->getProductDetail($productid);
+
+        if (!$product) {
+            return [
+                "success" => false,
+                "message" => "Sản phẩm không tồn tại!"
+            ];
+        }
+
+        return [
+            "success" => true,
+            "product" => $product
+        ];
+    }
 }

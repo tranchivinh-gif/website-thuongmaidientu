@@ -62,7 +62,7 @@ $product = getProductForEdit($productid);
             <tr>
                 <td></td>
                 <td>
-                    <button type="submit" name="btnupdate">
+                    <button type="submit" name="btnupdate" onclick="return confirm('Bạn muốn sửa sản phẩm này?')">
                         Sửa
                     </button>
                     <button type="reset">Nhập lại</button>

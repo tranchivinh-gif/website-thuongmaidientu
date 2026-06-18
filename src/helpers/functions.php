@@ -73,8 +73,123 @@ function router()
             }
             break;
 
+        case 'product-detail':
+            include_once __DIR__ . "/../view/vproductdetail.php";
+            break;
+
+        case 'cart':
+            include_once __DIR__ . "/../view/vcart.php";
+            break;
+
+        case 'addcart':
+            if (!isset($_SESSION["user"])) {
+                echo '<script>
+                        alert("Bạn phải đăng nhập trước khi mua hàng!");
+                        window.location.href="?page=login";
+                    </script>';
+                exit();
+            }
+            handleCart($_SESSION["user"]["UserID"], $_GET["id"]);
+            break;
+
         default:
             renderProduct();
+    }
+}
+
+// hàm tính tổng
+function totalPrice($price, $quanlity)
+{
+    return $price * $quanlity;
+}
+
+// hàm render sản phẩm trong giỏ hàng
+function renderProductInCart()
+{
+    $products = getCartDetail($_SESSION["user"]["UserID"]);
+    $totalPrice = 0;
+    while ($product = $products->fetch_assoc()) {
+        echo "<tr>";
+        echo "<td>" . $product["ProductID"] . "</td>";
+        echo "<td>" . $product["Quantity"] . "</td>";
+        echo "<td>" . number_format($product["Price"]) . " VNĐ</td>";
+        echo "</tr>";
+        $totalPrice += totalPrice($product["Price"], $product["Quantity"]);
+    }
+    echo '<tr style = "color: red;">';
+    echo '<td><button name="btnoder">Đặt hàng</button></td>';
+    echo '<td>Tổng Cộng:</td>';
+    echo '<td>' . number_format($totalPrice) . ' VNĐ</td>';
+    echo '</tr>';
+}
+
+// hàm lấy thông tin chi tiết giỏ hàng đổ ra view giỏ hàng
+function getCartDetail($userid)
+{
+    include_once __DIR__ . "/../controller/CartCtrl.php";
+    $cartCtrl = new CartCtrl();
+
+    $resultOfGetCartIDByUserID = $cartCtrl->getCartByUserID($userid);
+
+    if ($resultOfGetCartIDByUserID == null) {
+        echo '<script>
+                    alert("chưa có sản phẩm trong giỏ!");
+                    window.location.href="?page=home";
+                </script>';
+        exit();
+    } else {
+        $resultOfGetAllProductInCart = $cartCtrl->getAllCartItem($resultOfGetCartIDByUserID["CartID"]);
+        return $resultOfGetAllProductInCart;
+    }
+}
+
+// hàm xử lý giỏ hàng
+function handleCart($userid, $productid)
+{
+    if (isset($_GET["id"])) {
+        include_once __DIR__ . "/../controller/CartCtrl.php";
+        $cartCtrl = new CartCtrl();
+
+        $resultofGetOrCreate = $cartCtrl->getOrCreateCart($userid);
+
+        $resultofgetCartItem = $cartCtrl->getCartItem($resultofGetOrCreate["CartID"], $productid);
+
+        if ($resultofgetCartItem == null) {
+
+            $product = getProductDetail($_GET["id"]);
+            $product = $product["product"];
+
+            $data = [
+                "CartID"    => $resultofGetOrCreate["CartID"],
+                "ProductID" => $product["ProductID"],
+                "Quantity"  => 1,
+                "Price"     => $product["Discount"]
+            ];
+
+            $resultofAddtoCart = $cartCtrl->addItemToCart($data);
+
+            if ($resultofAddtoCart) {
+                echo '<script>
+                        alert("Thêm vào giỏ hàng thành công!");
+                        window.location.href="?page=home";
+                    </script>';
+                exit();
+            }
+        } else {
+            $resultOfupdateCartItem = $cartCtrl->updateCartItem(
+                $resultofgetCartItem["CartID"],
+                $resultofgetCartItem["ProductID"],
+                $resultofgetCartItem["Quantity"]
+            );
+
+            if ($resultOfupdateCartItem) {
+                echo '<script>
+                        alert("Thêm vào giỏ hàng thành công!");
+                        window.location.href="?page=home";
+                    </script>';
+                exit();
+            }
+        }
     }
 }
 
@@ -273,7 +388,7 @@ function renderProductMager()
         echo '<td>' . number_format($p['Discount'], 0, ',', '.') . '</td>';
         echo '<td>' . $p['Stock'] . '</td>';
         echo '<td>' . ($p['Status'] == 1 ? 'Đang bán' : 'Ngừng bán') . '</td>';
-        echo '<td><a href="?page=edit-product&id=' . $p['ProductID'] . '">sửa</a> | <a href="?page=del-product&id=' . $p['ProductID'] . '">xóa</a></td>';
+        echo '<td><a href="?page=edit-product&id=' . $p['ProductID'] . '">sửa</a> | <a href="?page=del-product&id=' . $p['ProductID'] . '" onclick="return confirm(\'Bạn muốn xóa sản phẩm này?\')">xóa</a></td>';
         echo '</tr>';
     }
 }
@@ -449,7 +564,7 @@ function renderProduct()
             continue;
         }
 
-        echo '<div class="product-card"><a href="?page=product-detail/' . $p['ProductID'] . '">';
+        echo '<div class="product-card"><a href="?page=product-detail&id=' . $p['ProductID'] . '">';
         echo '<img src="/img/' . $p['Image'] . '" alt="">';
         echo '<h3>' . $p['ProductName'] . '</h3>';
         if ($p['Discount'] == 0) {
@@ -576,4 +691,12 @@ function deleteProduct()
             window.location='?page=product-manager';
         </script>";
     }
+}
+
+// hàm lấy sản phẩm chi tiết đổ ra view
+function getProductDetail($productid)
+{
+    include_once __DIR__ . "/../controller/ProductCtrl.php";
+    $productModel = new ProductCtrl();
+    return $productModel->getProductDetail($productid);
 }

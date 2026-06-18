@@ -13,7 +13,7 @@ function validateFullName() {
 // hàm kiểm tra email
 function validateEmail() {
     var email = document.getElementsByName("txtemail")[0].value;
-    var bieuthuc = /^[A-Za-z\d]{3,}\w*@gmail\.com$/;
+    var bieuthuc = /^[A-Za-z\d]{2,}\w*@gmail\.com$/;
 
     if (!bieuthuc.test(email)) {
         alert("Email phải dài hơn 3 kí tự!");
@@ -55,4 +55,6 @@ function validatePrice() {
 
     return true;
 }
+
+
 

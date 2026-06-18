@@ -186,4 +186,47 @@ class Product
 
         return false;
     }
+
+    public function getProductDetail($productid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "SELECT 
+                p.ProductID,
+                p.CategoryID,
+                p.ShopID,
+                p.ProductName,
+                p.Price,
+                p.Discount,
+                p.Description AS ProductDescription,
+                p.Image,
+                p.Stock,
+                p.Status,
+
+                c.CategoryName,
+                c.Description AS CategoryDescription,
+
+                s.ShopName,
+                s.Description AS ShopDescription,
+                s.Logo,
+                s.Status AS ShopStatus
+
+            FROM product p
+            LEFT JOIN category_product c ON p.CategoryID = c.CategoryID
+            LEFT JOIN shop s ON p.ShopID = s.ShopID
+            WHERE p.ProductID = $productid";
+
+        $result = $conn->query($sql);
+
+        if (!$result) {
+            return null;
+        }
+
+        return $result->fetch_assoc();
+    }
 }

@@ -33,7 +33,8 @@
                 ?>
             </div>
         </div>
-        <div class="footer">TRẦN CHÍ VĨNH</div>
+        <div class="footer">
+            <?php echo isset($_SESSION["user"]) ? strtoupper($_SESSION["user"]["UserName"]) : "WebSiteBanHang"; ?></div>
     </div>
     <script src="/../js/functions.js"></script>
 </body>
