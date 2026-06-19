@@ -57,7 +57,7 @@ class Cart
         $conn = $db->moKetNoi();
 
         $sql = "UPDATE cart_detail 
-            SET Quantity = $quantity + 1
+            SET Quantity = $quantity + Quantity
             WHERE CartID = $cartID 
             AND ProductID = $productID";
 

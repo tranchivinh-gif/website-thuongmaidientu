@@ -162,7 +162,7 @@ function handleCart($userid, $productid)
             $data = [
                 "CartID"    => $resultofGetOrCreate["CartID"],
                 "ProductID" => $product["ProductID"],
-                "Quantity"  => 1,
+                "Quantity"  => $_POST["quantity"],
                 "Price"     => $product["Discount"]
             ];
 
@@ -179,7 +179,7 @@ function handleCart($userid, $productid)
             $resultOfupdateCartItem = $cartCtrl->updateCartItem(
                 $resultofgetCartItem["CartID"],
                 $resultofgetCartItem["ProductID"],
-                $resultofgetCartItem["Quantity"]
+                $_POST["quantity"]
             );
 
             if ($resultOfupdateCartItem) {
