@@ -93,4 +93,19 @@ class User
         $sql = "select s.ShopID from shop s join employee e on s.ShopID=e.ShopID where s.OwnerID = $userid or e.UserID = $userid";
         return $conn->query($sql)->fetch_assoc();
     }
+
+    // hàm lấy thông tin cá nhân của khách hàng
+    public function getInfoCustomer($userid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "select UserName, Email, Image, Phone, Address from user where UserID = $userid";
+
+        return $conn->query($sql)->fetch_assoc();
+    }
 }

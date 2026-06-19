@@ -105,4 +105,11 @@ class UserCtrl
         $result = $userModel->getShopID($userid);
         return $result["ShopID"];
     }
+
+    // hàm lấy thông tin cá nhân của khách hàng
+    public function getInfoCustomer($userid)
+    {
+        $userModel = new User();
+        return $userModel->getInfoCustomer($userid);
+    }
 }

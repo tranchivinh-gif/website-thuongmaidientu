@@ -1,81 +1,81 @@
-        .container {
-            width: 1200px;
-            margin: auto;
-            border: 1px solid black;
-        }
-
-        .header {
-            display: flex;
-            border-bottom: 1px solid black;
-        }
-
-        .nav {
-            width: 60%;
-        }
-
-        .nav ul {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-        }
-
-        .nav a {
-            text-decoration: none;
-        }
-
-        .search {
-            width: 40%;
-            align-self: center;
-            justify-items: end;
-            margin-right: 20px;
-        }
-
-        .section {
-            display: flex;
-        }
-
-        .left {
-            width: 30%;
-            border-right: 1px solid black;
-        }
-
-        .right {
-            width: 70%;
-        }
-
-        .footer {
-            text-align: center;
-            border-top: 1px solid black;
-        }
-
-        .formlogin a{
-            text-decoration: none;
-        }
-
-        .product-manager{
-            border-collapse: collapse;
-            text-align: center;
-            margin: 10px 10px;
-            width: 97%;
-        }
-
-        .product-manager td, th{
-            border: 1px solid black;
-        }
-
-        .product-manager a{
-            text-decoration: none;
-        }
-
-
-        /* render Product  */
-        .product-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-
-    max-width: 1800px;
+.container {
+    width: 1200px;
     margin: auto;
+    border: 1px solid black;
+}
+
+.header {
+    display: flex;
+    border-bottom: 1px solid black;
+}
+
+.nav {
+    width: 60%;
+}
+
+.nav ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+.nav a {
+    text-decoration: none;
+}
+
+.search {
+    width: 40%;
+    align-self: center;
+    justify-items: end;
+    margin-right: 20px;
+}
+
+.section {
+    display: flex;
+}
+
+.left {
+    width: 30%;
+    border-right: 1px solid black;
+}
+
+.right {
+    width: 70%;
+}
+
+.footer {
+    text-align: center;
+    border-top: 1px solid black;
+}
+
+.formlogin a{
+    text-decoration: none;
+}
+
+.product-manager{
+    border-collapse: collapse;
+    text-align: center;
+    margin: 10px 10px;
+    width: 97%;
+}
+
+.product-manager td, th{
+    border: 1px solid black;
+}
+
+.product-manager a{
+    text-decoration: none;
+}
+
+
+/* render Product  */
+.product-grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 20px;
+
+max-width: 1800px;
+margin: auto;
 }
 
 .product-grid a{
