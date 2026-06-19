@@ -55,4 +55,37 @@ class CartCtrl
         $cartModel = new Cart();
         return $cartModel->addItemToCart($data);
     }
+
+    // hàm xóa sản phẩm trong giỏ hàng
+    public function deleteItemInCart($cartID, $productID)
+    {
+        $cartModel = new Cart();
+        $result = $cartModel->deleteItemInCart($cartID, $productID);
+
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // hàm xóa giỏ hàng
+    public function deleteCart($cartID)
+    {
+        $cartModel = new Cart();
+        $result = $cartModel->deleteCart($cartID);
+
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // hàm đếm sản phẩm từ giỏ hàng
+    public function countItem($cartID)
+    {
+        $cartModel = new Cart();
+        return $cartModel->countItem($cartID);
+    }
 }

@@ -177,3 +177,13 @@
     border: none;
 }
 
+.btn-danger{
+    background: #ff4848;
+    color: white;
+    border: none;
+}
+
+.product-manager img{
+    width: 100px;
+    height: 100px;
+}

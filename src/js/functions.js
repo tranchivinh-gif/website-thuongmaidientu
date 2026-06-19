@@ -56,5 +56,20 @@ function validatePrice() {
     return true;
 }
 
+// hàm chọn tất cả sản phẩm trong giỏ hàng
+function initCheckAllCart() {
+    const checkAll = document.getElementById("checkAll");
+    const items = document.querySelectorAll(".item-check");
 
+    if (!checkAll) return;
 
+    checkAll.addEventListener("change", function () {
+        items.forEach(cb => cb.checked = this.checked);
+    });
+
+    items.forEach(cb => {
+        cb.addEventListener("change", function () {
+            checkAll.checked = [...items].every(i => i.checked);
+        });
+    });
+}

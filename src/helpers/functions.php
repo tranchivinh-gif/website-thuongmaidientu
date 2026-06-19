@@ -79,21 +79,59 @@ function router()
 
         case 'cart':
             include_once __DIR__ . "/../view/vcart.php";
+            handleEventInCartPage();
             break;
 
         case 'addcart':
-            if (!isset($_SESSION["user"])) {
-                echo '<script>
-                        alert("Bạn phải đăng nhập trước khi mua hàng!");
-                        window.location.href="?page=login";
-                    </script>';
-                exit();
-            }
+
             handleCart($_SESSION["user"]["UserID"], $_GET["id"]);
             break;
 
         default:
             renderProduct();
+    }
+}
+
+// hàm xử lý xử kiện ở trang giỏ hàng
+function handleEventInCartPage()
+{
+    // xử lý nút xóa sản phẩm trong giỏ hàng
+    if (isset($_POST["btndelete"])) {
+
+        include_once __DIR__ . "/../controller/CartCtrl.php";
+
+        $cartCtrl = new CartCtrl();
+        $cartID = $cartCtrl->getCartByUserID($_SESSION["user"]["UserID"]);
+
+        if (isset($_POST["selected"])) {
+
+            $selected = $_POST['selected'];
+
+            foreach ($selected as $productId => $value) {
+                $cartCtrl->deleteItemInCart($cartID["CartID"], $productId);
+            }
+            $count = $cartCtrl->countItem($cartID["CartID"]);
+            if ($count["count"] > 0) {
+                echo '<script>
+                    alert("Xóa thành công!");
+                    window.location.href="?page=cart";
+                </script>';
+                exit();
+            } else {
+                $cartCtrl->deleteCart($cartID["CartID"]);
+                echo '<script>
+                    alert("Giỏ hàng trống! Mua sắm ngay!!");
+                    window.location.href="?page=home";
+                </script>';
+                exit();
+            }
+        } else {
+            echo '<script>
+                    alert("Vui lòng chọn ít nhất 1 sản phẩm!");
+                    window.location.href="?page=cart";
+                </script>';
+            exit();
+        }
     }
 }
 
@@ -108,19 +146,64 @@ function renderProductInCart()
 {
     $products = getCartDetail($_SESSION["user"]["UserID"]);
     $totalPrice = 0;
+
     while ($product = $products->fetch_assoc()) {
         echo "<tr>";
-        echo "<td>" . $product["ProductID"] . "</td>";
-        echo "<td>" . $product["Quantity"] . "</td>";
+
+        // checkbox chọn sản phẩm
+        echo '<td>
+            <input type="checkbox"
+                   class="item-check"
+                   name="selected[' . $product["ProductID"] . ']"
+                   value="1">
+        </td>';
+
+        echo "<td>
+            <a href='?page=product-detail&id=" . $product["ProductID"] . "'>
+                " . $product["ProductName"] . "
+            </a>
+        </td>";
+
+        echo '<td>
+            <a href="?page=product-detail&id=' . $product["ProductID"] . '">
+                <img src="/img/' . $product["Image"] . '" width="60">
+            </a>
+        </td>';
+
+        echo '<td>
+            <input type="number"
+                   name="quantity[' . $product["ProductID"] . ']"
+                   value="' . $product["Quantity"] . '"
+                   min="1">
+        </td>';
+
         echo "<td>" . number_format($product["Price"]) . " VNĐ</td>";
+
         echo "</tr>";
+
         $totalPrice += totalPrice($product["Price"], $product["Quantity"]);
     }
-    echo '<tr style = "color: red;">';
-    echo '<td><button name="btnoder">Đặt hàng</button></td>';
-    echo '<td>Tổng Cộng:</td>';
-    echo '<td>' . number_format($totalPrice) . ' VNĐ</td>';
+
+    // dòng tổng
+    echo '<tr style="color:red; font-weight:bold;">';
+
+    echo '<td>
+        <input type="checkbox" id="checkAll" onclick="initCheckAllCart();">
+    </td>';
+
+    echo '<td colspan = "2">Tổng Cộng:</td>';
+
+    echo '<td colspan = "2">' . number_format($totalPrice) . ' VNĐ</td>';
+
     echo '</tr>';
+    echo '<tr><td colspan = "5">
+        <button type="submit" name="btnorder" class="btn btn-primary">
+            Đặt hàng
+        </button>
+        <button type="submit" name="btndelete" class="btn btn-danger">
+            Xóa
+        </button>
+    </td></tr>';
 }
 
 // hàm lấy thông tin chi tiết giỏ hàng đổ ra view giỏ hàng
@@ -146,6 +229,14 @@ function getCartDetail($userid)
 // hàm xử lý giỏ hàng
 function handleCart($userid, $productid)
 {
+    if (!isset($_SESSION["user"])) {
+        echo '<script>
+                        alert("Bạn phải đăng nhập trước khi mua hàng!");
+                        window.location.href="?page=login";
+                    </script>';
+        exit();
+    }
+
     if (isset($_GET["id"])) {
         include_once __DIR__ . "/../controller/CartCtrl.php";
         $cartCtrl = new CartCtrl();
@@ -171,7 +262,7 @@ function handleCart($userid, $productid)
             if ($resultofAddtoCart) {
                 echo '<script>
                         alert("Thêm vào giỏ hàng thành công!");
-                        window.location.href="?page=home";
+                        window.location.href="?page=cart";
                     </script>';
                 exit();
             }
@@ -185,7 +276,7 @@ function handleCart($userid, $productid)
             if ($resultOfupdateCartItem) {
                 echo '<script>
                         alert("Thêm vào giỏ hàng thành công!");
-                        window.location.href="?page=home";
+                        window.location.href="?page=cart";
                     </script>';
                 exit();
             }
@@ -561,6 +652,10 @@ function renderProduct()
     foreach ($products as $p) {
         // Không hiển thị sản phẩm ngừng bán
         if ($p['Status'] == 0) {
+            continue;
+        }
+
+        if ($p["Stock"] == 0) {
             continue;
         }
 

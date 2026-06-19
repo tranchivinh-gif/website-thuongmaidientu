@@ -70,10 +70,10 @@ class Cart
         $db = new Database();
         $conn = $db->moKetNoi();
 
-        $sql = "SELECT * 
-            FROM cart_detail 
-            WHERE CartID = $cartID 
-            AND ProductID = $productID 
+        $sql = "SELECT cd.*, p.ProductName 
+            FROM cart_detail cd join product p on p.ProductID = cd.ProductID 
+            WHERE cd.CartID = $cartID 
+            AND cd.ProductID = $productID 
             LIMIT 1";
 
         $result = $conn->query($sql);
@@ -87,12 +87,52 @@ class Cart
         $db = new Database();
         $conn = $db->moKetNoi();
 
-        $sql = "SELECT * 
-            FROM cart_detail 
-            WHERE CartID = $cartID";
+        $sql = "SELECT cd.*, p.ProductName, p.Image  
+            FROM cart_detail cd join product p on p.ProductID = cd.ProductID 
+            WHERE cd.CartID = $cartID";
 
         $result = $conn->query($sql);
 
         return $result ? $result : null;
+    }
+
+    // hàm xóa sản phẩm trong giỏ hàng
+    public function deleteItemInCart($cartid, $productid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        $sql = "DELETE 
+                FROM cart_detail
+                WHERE CartID = $cartid 
+                AND ProductID = $productid";
+
+        return $conn->query($sql);
+    }
+
+    // hàm xóa giỏ hàng
+    public function deleteCart($cartid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        $sql = "DELETE 
+                FROM cart
+                WHERE CartID = $cartid";
+
+        return $conn->query($sql);
+    }
+
+    // hàm đếm sản phẩm từ giỏ hàng
+    public function countItem($cartID)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        $sql = "SELECT count(*) as count 
+            FROM cart_detail  
+            WHERE CartID = $cartID";
+
+        return  $conn->query($sql)->fetch_assoc();
     }
 }
