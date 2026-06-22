@@ -73,3 +73,17 @@ function initCheckAllCart() {
         });
     });
 }
+
+// hàm kiểm tra số điện thoại
+function kiemtrasdt() {
+    var sdt = document.getElementById("tel").value;
+    var bieuthuc = /^(03|05|07|08|09)\d{8}$/;
+
+    if (bieuthuc.test(sdt)) {
+        document.getElementById("err2").innerHTML = "";
+        return true;
+    }
+
+    document.getElementById("err2").innerHTML = "Số điện thoại không hợp lệ!";
+    return false;
+}

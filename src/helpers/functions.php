@@ -87,6 +87,7 @@ function router()
             break;
 
         case 'profile':
+            updateProfileHandler();
             include_once __DIR__ . "/../controller/UserCtrl.php";
             include_once __DIR__ . "/../view/vprofile.php";
             break;
@@ -94,6 +95,73 @@ function router()
         default:
             renderProduct();
     }
+}
+
+// hàm xử lý cập nhật profile
+function updateProfileHandler()
+{
+    if (!isset($_POST["btnupdateprofile"])) {
+        return;
+    }
+
+    $phone = $_POST["txtphone"];
+    $address = $_POST["txtaddress"];
+    $oldImg = !empty($_POST["txtimageold"]) ? $_POST["txtimageold"] : "";
+    $userId = $_SESSION["user"]["UserID"];
+
+    $data = [
+        "phone" => $phone,
+        "address" => $address,
+        "img" => $oldImg,
+        "userid" => $userId
+    ];
+
+    // nếu có chọn ảnh mới
+    if ($_FILES["txtimage"]["error"] == 0) {
+
+        // xóa ảnh cũ (nếu có)
+        if (!empty($oldImg)) {
+            $oldImagePath = "img/profile_img/" . $oldImg;
+
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+        }
+
+        // lấy đuôi file
+        $ext = pathinfo($_FILES["txtimage"]["name"], PATHINFO_EXTENSION);
+
+        // tạo tên mới: User-id-time()-profile
+        $newFileName = $_SESSION["user"]["UserID"] . "_" . time() . ".jpg";
+
+        $newImagePath = "img/profile_img/" . $newFileName;
+
+        if (move_uploaded_file($_FILES["txtimage"]["tmp_name"], $newImagePath)) {
+            $data["img"] = $newFileName;
+        } else {
+            echo '<script>
+                alert("Upload ảnh thất bại!");
+            </script>';
+            exit();
+        }
+    }
+    include_once __DIR__ . "/../controller/UserCtrl.php";
+
+    $userCtrl = new UserCtrl();
+    $resultOfUpdate = $userCtrl->updateProfile($data);
+
+    if (!$resultOfUpdate) {
+        echo '<script>
+                alert("Cập nhật thất bại!");
+            </script>';
+        exit();
+    }
+
+    echo '<script>
+            alert("Cập nhật thành công!");
+            window.location.href="?page=profile";
+        </script>';
+    exit();
 }
 
 // hàm xử lý xử kiện ở trang giỏ hàng
@@ -173,15 +241,16 @@ function checkUser()
     $userCtrl = new UserCtrl();
     $infoUser = $userCtrl->getInfoCustomer($_SESSION["user"]["UserID"]);
 
-    // kiểm tra thông tin cá nhân còn trống
-    foreach ($infoUser as $value) {
-        if (empty(trim((string)$value))) {
-            echo '<script>
-                    alert("Bạn cần cập nhật thông tin giao hàng!");
-                    window.location.href="?page=profile";
-                </script>';
-            exit();
-        }
+    // chỉ kiểm tra phone và address
+    if (
+        empty(trim((string)$infoUser["Phone"])) ||
+        empty(trim((string)$infoUser["Address"]))
+    ) {
+        echo '<script>
+                alert("Bạn cần cập nhật số điện thoại và địa chỉ giao hàng!");
+                window.location.href="?page=profile";
+            </script>';
+        exit();
     }
 
     return $infoUser;
@@ -502,6 +571,7 @@ function displayMenu()
 
         case 3:
             echo '<li><a href="?page=cart">Giỏ hàng</a></li>';
+            echo '<li><a href="?page=profile">Hồ sơ</a></li>';
             break;
 
         case 4:
