@@ -112,4 +112,11 @@ class UserCtrl
         $userModel = new User();
         return $userModel->getInfoCustomer($userid);
     }
+
+    // hàm lấy cập nhật thông tin
+    public function updateProfile($data)
+    {
+        $userModel = new User();
+        return $userModel->updateProfile($data);
+    }
 }

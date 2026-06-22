@@ -108,4 +108,23 @@ class User
 
         return $conn->query($sql)->fetch_assoc();
     }
+
+    // hàm lấy cập nhật thông tin
+    public function updateProfile($data)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "update user set 
+        Image='$data[img]',
+        Phone='$data[phone]',
+        Address='$data[address]'
+        where UserID=$data[userid]";
+
+        return $conn->query($sql);
+    }
 }
