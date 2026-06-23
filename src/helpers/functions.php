@@ -162,10 +162,17 @@ function handleEventInCartPage()
         // kiểm tra thông tin cá nhân
         $infoUser = checkUser();
 
+        include_once __DIR__ . "/../controller/ProductCtrl.php";
+
+        $productCtrl = new ProductCtrl();
+
+        // kiểm tra số lượng tồn trong kho
+        checkStockValidation($_POST["selected"], $_POST["quantity"], $productCtrl);
+
         $data = [
             "userid" => $_SESSION["user"]["UserID"],
             "orderdate" => date("Y-m-d H:i:s"),
-            "total" => $_POST["totalPrice"],
+            "total" => (float) str_replace(['.', ',', ' VNĐ', 'VNĐ'], '', $_POST["totalPrice"]),
             "status" => "pending",
             "shippingaddress" => $infoUser["Address"]
         ];
@@ -174,8 +181,9 @@ function handleEventInCartPage()
 
         $orderCtrl = new OrderCtrl();
         $orderID = $orderCtrl->createNewOrder($data);
+
         if (!$orderID) {
-            echo 'Lỗi tạo mới hóa đơn!';
+            echo 'Lỗi tạo mới đơn đặt hàng!';
         } else {
             include_once __DIR__ . "/../controller/OrderDetailCtrl.php";
 
@@ -191,6 +199,8 @@ function handleEventInCartPage()
                     "discount"  => 0 // hoặc lấy từ form nếu có
                 ];
 
+                $productCtrl->updateStockProductByID($productID,  $_POST["quantity"][$productID]);
+
                 $orderdetailCtrl->createOrderDetail($data);
 
                 $cartCtrl->deleteItemInCart($cartID["CartID"], $productID);
@@ -201,14 +211,14 @@ function handleEventInCartPage()
 
             if ($count["count"] > 0) {
                 echo '<script>
-                    alert("Mua hàng thành công!");
+                    alert("Đặt hàng thành công!");
                     window.location.href="?page=cart";
                 </script>';
                 exit();
             } else {
                 $cartCtrl->deleteCart($cartID["CartID"]);
                 echo '<script>
-                    alert("Giỏ hàng trống! Mua sắm ngay!!");
+                    alert("Đặt hàng thành công!");
                     window.location.href="?page=home";
                 </script>';
                 exit();
@@ -217,7 +227,6 @@ function handleEventInCartPage()
     }
 }
 
-
 // hàm render sản phẩm trong giỏ hàng
 function renderProductInCart()
 {
@@ -225,46 +234,127 @@ function renderProductInCart()
     $totalPrice = 0;
 
     while ($product = $products->fetch_assoc()) {
+
         echo "<tr>";
 
         // checkbox chọn sản phẩm
-        echo '<td><input type="checkbox" class="item-check" name="selected[' . $product["ProductID"] . ']" value="1"></td>';
-
-        echo "<td><a href='?page=product-detail&id=" . $product["ProductID"] . "'>" . $product["ProductName"] . "</a></td>";
-
-        echo '<td><a href="?page=product-detail&id=' . $product["ProductID"] . '"><img src="/img/' . $product["Image"] . '" width="60"></a></td>';
+        echo '<td>
+        <input type="checkbox"
+               class="item-check"
+               data-id="' . $product["ProductID"] . '"
+               name="selected[' . $product["ProductID"] . ']"
+               value="1"
+               onchange="tinhTongTien()">
+      </td>';
 
         echo '<td>
-            <input type="number" name="quantity[' . $product["ProductID"] . ']" value="' . $product["Quantity"] . '" min="1"></td>';
+                <a href="?page=product-detail&id=' . $product["ProductID"] . '">
+                    ' . $product["ProductName"] . '
+                </a>
+              </td>';
 
-        echo '<input type="hidden" name="price[' . $product["ProductID"] . ']" value="' . $product["Price"] . '">';
-        echo "<td>" . number_format($product["Price"]) . " VNĐ</td>";
+        echo '<td>
+                <a href="?page=product-detail&id=' . $product["ProductID"] . '">
+                    <img src="/img/' . $product["Image"] . '" width="60">
+                </a>
+              </td>';
+
+        // số lượng sản phẩm trong giỏ hàng
+        echo '<td>
+        <input type="number"
+               id="quantity_' . $product["ProductID"] . '"
+               name="quantity[' . $product["ProductID"] . ']"
+               value="' . $product["Quantity"] . '"
+               min="1"
+               onchange="kiemTraSoLuong(this); tinhTongTien();">
+        <div id="err_' . $product["ProductID"] . '" style="color:red;"></div>
+      </td>';
+
+        // giá sản phẩm trong giỏ hàng
+        echo '<td>
+        <input type="text"
+               value="' . number_format($product["Price"]) . ' VNĐ"
+               readonly
+               id="price_' . $product["ProductID"] . '"
+               data-price="' . $product["Price"] . '"
+               name="price[' . $product["ProductID"] . ']">
+      </td>';
 
         echo "</tr>";
-
-        // cộng dồng tiền từng sản phẩm
-        $totalPrice += totalPrice($product["Price"], $product["Quantity"]);
     }
 
     // dòng tổng
     echo '<tr style="color:red; font-weight:bold;">';
 
-    echo '<td><input type="checkbox" id="checkAll" onclick="initCheckAllCart();"></td>';
+    echo '<td>
+            <input type="checkbox"
+                    id="checkAll"
+                    onchange="toggleCheckAll(this)">
+          </td>';
 
-    echo '<td colspan = "2">Tổng Cộng:</td>';
+    echo '<td colspan="2">Tổng Cộng:</td>';
 
-    echo '<td colspan = "2">' . number_format($totalPrice) . ' VNĐ</td>';
-
-    echo '<input type="hidden" name="totalPrice" value="' . $totalPrice . '">';
+    // tổng tiền (readonly)
+    echo '<td colspan="2">  
+            <input type="text"
+                   value="' . number_format($totalPrice) . ' VNĐ"
+                   readonly id="total_price"
+                   name = "totalPrice">
+          </td>';
 
     echo '</tr>';
 
     echo '<tr>
-            <td colspan = "5">
-                <button type="submit" name="btnorder" class="btn btn-primary">Đặt hàng</button>
-                <button type="submit" name="btndelete" class="btn btn-danger">Xóa</button>
+            <td colspan="5">
+                <button type="submit" name="btnorder" class="btn btn-primary">
+                    Đặt hàng
+                </button>
+
+                <button type="submit" name="btndelete" class="btn btn-danger">
+                    Xóa
+                </button>
             </td>
-        </tr>';
+          </tr>';
+}
+
+// hàm so sánh số lượng tồn trong kho và số lượng mua hàng
+function checkStockValidation($selected, $quantity, $productCtrl)
+{
+    $errors = [];
+
+    foreach ($selected as $productID => $value) {
+
+        $stock = $productCtrl->getStockProductByID($productID);
+
+        $qty = isset($quantity[$productID])
+            ? (int)$quantity[$productID]
+            : 0;
+
+        $productName = $stock["ProductName"] ?? "Sản phẩm";
+        $currentStock = $stock["Stock"] ?? 0;
+
+        if ($qty <= 0) {
+            $errors[] = "$productName: số lượng không hợp lệ";
+            continue;
+        }
+
+        if ($qty > $currentStock) {
+            $errors[] = "$productName: chỉ còn $currentStock cái trong kho";
+        }
+    }
+
+    // xử lý luôn ở trong hàm
+    if (!empty($errors)) {
+        $msg = implode("\n", $errors);
+
+        echo "<script>
+                alert(" . json_encode($msg) . ");
+                history.back();
+              </script>";
+        exit;
+    }
+
+    return true;
 }
 
 // hàm xử lý cập nhật profile

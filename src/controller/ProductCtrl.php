@@ -135,4 +135,22 @@ class ProductCtrl
             "product" => $product
         ];
     }
+
+    // hàm lấy tồn kho sẩn phẩm bằng productid
+    public function getStockProductByID($productid)
+    {
+        $productModel = new Product();
+        $result = $productModel->getStockProductByID($productid);
+
+        return $result;
+    }
+
+    // hàm cập nhật tồn kho sẩn phẩm bằng productid
+    public function updateStockProductByID($productid, $quanlity)
+    {
+        $productModel = new Product();
+        $result = $productModel->updateStockProductByID($productid, $quanlity);
+
+        return $result;
+    }
 }

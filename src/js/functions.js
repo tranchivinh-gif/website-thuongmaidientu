@@ -56,24 +56,6 @@ function validatePrice() {
     return true;
 }
 
-// hàm chọn tất cả sản phẩm trong giỏ hàng
-function initCheckAllCart() {
-    const checkAll = document.getElementById("checkAll");
-    const items = document.querySelectorAll(".item-check");
-
-    if (!checkAll) return;
-
-    checkAll.addEventListener("change", function () {
-        items.forEach(cb => cb.checked = this.checked);
-    });
-
-    items.forEach(cb => {
-        cb.addEventListener("change", function () {
-            checkAll.checked = [...items].every(i => i.checked);
-        });
-    });
-}
-
 // hàm kiểm tra số điện thoại
 function kiemtrasdt() {
     var sdt = document.getElementById("tel").value;
@@ -86,4 +68,59 @@ function kiemtrasdt() {
 
     document.getElementById("err2").innerHTML = "Số điện thoại không hợp lệ!";
     return false;
+}
+
+// hàm chọn tất cả sản phẩm trong giỏ hàng
+function toggleCheckAll(checkAll) {
+    const items = document.querySelectorAll(".item-check");
+
+    items.forEach(cb => {
+        cb.checked = checkAll.checked;
+    });
+
+    tinhTongTien();
+}
+
+// kiểm tra số lượng sản phẩm hợp lệ trong giỏ hàng 
+function kiemTraSoLuong(input) {
+    var value = input.value;
+    var productId = input.id.replace("quantity_", "");
+    var err = document.getElementById("err_" + productId);
+
+    var bieuthuc = /^[1-9]\d*$/;
+
+    if (bieuthuc.test(value)) {
+        err.innerHTML = "";
+        return true;
+    }
+
+    err.innerHTML = "Số lượng không hợp lệ!";
+    return false;
+}
+
+// hàm tính tổng tiền khi checkbox trong giỏ hàng
+function tinhTongTien() {
+    let checkboxes = document.querySelectorAll(".item-check");
+    let total = 0;
+
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            let id = cb.dataset.id;
+
+            let qtyInput = document.getElementById("quantity_" + id);
+            let priceInput = document.getElementById("price_" + id);
+
+            if (!qtyInput || !priceInput) return;
+
+            let qty = parseInt(qtyInput.value);
+            let price = parseFloat(priceInput.dataset.price);
+
+            if (!isNaN(qty) && qty > 0) {
+                total += qty * price;
+            }
+        }
+    });
+
+    document.getElementById("total_price").value =
+        total.toLocaleString("vi-VN") + " VNĐ";
 }
