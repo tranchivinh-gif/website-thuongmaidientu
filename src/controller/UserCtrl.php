@@ -10,6 +10,7 @@ class UserCtrl
         $userModel = new User();
         $user = $userModel->getUserByEmail($email);
 
+        // nếu không có email user tồn tại
         if (!$user) {
             return [
                 "success" => false,
@@ -17,6 +18,7 @@ class UserCtrl
             ];
         }
 
+        // nếu mât khẩu không khớp
         if ($user["Password"] != md5($password)) {
             return [
                 "success" => false,
@@ -24,6 +26,7 @@ class UserCtrl
             ];
         }
 
+        // nếu trạng thái tài khoản không hợp lệ
         if ($user["Status"] == 0) {
             return [
                 "success" => false,
@@ -98,7 +101,7 @@ class UserCtrl
         }
     }
 
-    // hàm lấy ShopID để gắn vào session lúc đăng nhập
+    // hàm lấy ShopID để gắn vào session lúc đăng nhập cho nhân viên và chủ shop
     public function getShopIDToSession($userid)
     {
         $userModel = new User();

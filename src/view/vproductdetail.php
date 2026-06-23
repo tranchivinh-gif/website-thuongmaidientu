@@ -9,7 +9,7 @@ if (!$product) {
 
 <div class="product-detail">
     <div class="product-image">
-        <img src="<?php echo '/img/' . $product["Image"]; ?>" alt="<?php echo $product["ProductName"]; ?>">
+        <img src="<?php echo '/img/product_img/' . $product["Image"]; ?>" alt="<?php echo $product["ProductName"]; ?>">
     </div>
 
     <div class="product-info">
@@ -33,7 +33,7 @@ if (!$product) {
         <p>Cửa hàng: <?php echo $product["ShopName"]; ?></p>
 
         <p>
-            <img src="<?php echo '/img/' . $product["Logo"]; ?>" alt="<?php echo $product["ShopName"]; ?>"
+            <img src="<?php echo '/img/logo_img/' . $product["Logo"]; ?>" alt="<?php echo $product["ShopName"]; ?>"
                 style="width:80px;height:auto;">
         </p>
 
