@@ -229,4 +229,37 @@ class Product
 
         return $result->fetch_assoc();
     }
+
+    // hàm lấy tồn kho sẩn phẩm bằng productid
+    public function getStockProductByID($productid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "select Stock, ProductName from product where ProductID = $productid";
+        $result = $conn->query($sql);
+
+        if (!$result) {
+            return null;
+        }
+        return $result->fetch_assoc();
+    }
+
+    // hàm cập nhật tồn kho sẩn phẩm bằng productid
+    public function updateStockProductByID($productid, $quanlity)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "update product set Stock = Stock - $quanlity where ProductID = $productid";
+        return $conn->query($sql);
+    }
 }
