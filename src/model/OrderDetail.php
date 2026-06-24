@@ -33,4 +33,25 @@ class OrderDetail
 
         return $conn->query($sql);
     }
+
+    // hàm lấy tất cả chi tiết đơn hàng của người dùng
+    public function getAllOrderDetailByOrderID($orderid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+        $sql = "select * from `order_detail` where OrderID = $orderid";
+        $result = $conn->query($sql);
+
+        $data = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
 }

@@ -92,6 +92,14 @@ function router()
             include_once __DIR__ . "/../view/vprofile.php";
             break;
 
+        case 'myorder':
+            include_once __DIR__ . "/../view/vmyorder.php";
+            break;
+
+        case 'order-detail':
+            include_once __DIR__ . "/../view/vorderdetail.php";
+            break;
+
         default:
             renderProduct();
     }
