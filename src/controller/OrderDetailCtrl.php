@@ -10,4 +10,22 @@ class OrderDetailCtrl
         $orderdetailModel = new OrderDetail();
         return $orderdetailModel->createOrderDetail($data);
     }
+
+    // hàm lấy tất cả chi tiết đơn hàng của người dùng
+    public function getAllOrderDetailByOrderID($orderid)
+    {
+        $orderdetailModel = new OrderDetail();
+        $result = $orderdetailModel->getAllOrderDetailByOrderID($orderid);
+        if (count($result) == 0) {
+            return [
+                "success" => false,
+                "message" => "lỗi!"
+            ];
+        }
+
+        return [
+            "success" => true,
+            "orderdetaillist" => $result
+        ];
+    }
 }

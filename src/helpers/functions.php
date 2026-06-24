@@ -22,6 +22,7 @@ function displayMenu()
 
         case 3: // khách hàng
             echo '<li><a href="?page=cart">Giỏ hàng</a></li>';
+            echo '<li><a href="?page=myorder">Đơn hàng của tôi</a></li>';
             echo '<li><a href="?page=profile">Hồ sơ</a></li>';
             break;
 

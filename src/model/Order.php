@@ -20,7 +20,8 @@ class Order
         OrderDate,
         Total,
         Status,
-        ShippingAddress
+        ShippingAddress,
+        Note
     )
     values
     (
@@ -28,7 +29,8 @@ class Order
         '$data[orderdate]',
         '$data[total]',
         '$data[status]',
-        '$data[shippingaddress]'
+        '$data[shippingaddress]',
+        '$data[note]'
     )";
 
         $result = $conn->query($sql);
@@ -38,5 +40,26 @@ class Order
         }
 
         return false;
+    }
+
+    // hàm lấy tất cả đơn hàng của người dùng
+    public function getAllOrderByUserID($userid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+        $sql = "select * from `order` where UserID = $userid";
+        $result = $conn->query($sql);
+
+        $data = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data;
     }
 }
