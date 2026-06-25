@@ -98,6 +98,7 @@ function createNewPayment($orderID, $paymentCtrl)
         echo '<script>
                     alert("tạo thanh toán thất bại!");
                 </script>';
+        exit();
     }
 }
 
@@ -175,6 +176,7 @@ function renderOrdersByUser($userid)
         echo "<tr>";
         echo "<td>" . $order["OrderID"] . "</td>";
         echo "<td>" . $order["OrderDate"] . "</td>";
+        echo "<td>" . $order["ShippingAddress"] . "</td>";
         echo "<td>" . number_format($order["Total"]) . " VNĐ</td>";
         echo "<td>" . formatOrderStatus($order["Status"]) . "</td>";
         echo "<td>
@@ -217,8 +219,68 @@ function renderOrderDetail($orderid)
 
     foreach ($details as $item) {
         echo "<tr>";
-        echo "<td>" . $item["ProductID"] . "</td>";
+        echo "<td>" . $item["ProductName"] . "</td>";
         echo "<td>" . $item["Quantity"] . "</td>";
+        echo "<td>" . $item["Status"] . "</td>";
         echo "</tr>";
+    }
+}
+
+// hàm render đơn hàng cho shop để quản lý
+function renderOrderList($shopid)
+{
+    $orderCtrl = new OrderCtrl();
+    $result = $orderCtrl->getAllOrderByShopID($shopid);
+
+    if (!$result["success"]) {
+        echo "
+            <tr>
+                <td colspan='6'>" . $result["message"] . "</td>
+            </tr>
+        ";
+        return;
+    }
+
+    foreach ($result["orderlist"] as $order) {
+        echo "
+        <tr>
+            <td>{$order["OrderID"]}</td>
+            <td>{$order["OrderDate"]}</td>
+            <td>{$order["UserID"]}</td>
+            <td>" . number_format($order["Total"]) . " VNĐ</td>
+            <td>{$order["Status"]}</td>
+            <td>
+                <a href='?page=orderdetail-manager&&orderid={$order["OrderID"]}'>
+                    Xem chi tiết
+                </a>
+            </td>
+        </tr>
+        ";
+    }
+}
+
+// render chi tiết đơn hàng của shop để quản lý
+function renderOrderDetailList($orderid, $shopid)
+{
+    $orderCtrl = new OrderCtrl();
+    $result = $orderCtrl->getOrderDetailByOrderID($orderid, $shopid);
+
+    if (!$result["success"]) {
+        echo "
+            <tr>
+                <td colspan='3'>" . $result["message"] . "</td>
+            </tr>
+        ";
+        return;
+    }
+
+    foreach ($result["orderdetail"] as $item) {
+        echo "
+        <tr>
+            <td>{$item["ProductName"]}</td>
+            <td>{$item["ShippingAddress"]}</td>
+            <td>{$item["Status"]}</td>
+        </tr>
+        ";
     }
 }

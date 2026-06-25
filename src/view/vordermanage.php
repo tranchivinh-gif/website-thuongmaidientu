@@ -1,15 +1,17 @@
-<form method="POST" action="?page=myorder">
+<form method="GET" action="">
+
     <table class="product-manager">
         <tr>
             <td>Mã đơn</td>
             <td>Ngày đặt</td>
-            <td>Địa chỉ</td>
+            <td>Khách hàng</td>
             <td>Tổng tiền</td>
             <td>Trạng thái</td>
-            <td>Hành động</td>
+            <td>Thao tác</td>
         </tr>
-        <tr>
-            <?php renderOrdersByUser($_SESSION["user"]["UserID"]); ?>
-        </tr>
+
+        <?php
+        renderOrderList($_SESSION["shopid"]);
+        ?>
     </table>
 </form>

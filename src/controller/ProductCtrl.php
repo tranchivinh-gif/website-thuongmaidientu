@@ -12,7 +12,7 @@ class ProductCtrl
         if (!$result) {
             return [
                 "success" => false,
-                "message" => "Lỗi hiển thị sản phẩm!"
+                "message" => "Chưa có sản phẩm, thêm ngay!"
             ];
         }
 

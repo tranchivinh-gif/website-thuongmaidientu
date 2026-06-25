@@ -81,7 +81,10 @@ function renderProductMager()
 
     // kiểm tra kết quả lấy
     if (!$result["success"]) {
-        echo $result["message"];
+        echo '<tr>';
+        echo '<td colspan = 7>' . $result["message"] . '</td>';
+        echo '</tr>';
+        exit();
     }
 
     foreach ($result["productpack"] as $p) {

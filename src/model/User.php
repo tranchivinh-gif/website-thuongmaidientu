@@ -90,7 +90,7 @@ class User
             die("Lỗi kết nối database!");
         }
 
-        $sql = "select s.ShopID from shop s join employee e on s.ShopID=e.ShopID where s.OwnerID = $userid or e.UserID = $userid";
+        $sql = "select s.ShopID from shop s LEFT join employee e on s.ShopID=e.ShopID where s.OwnerID = $userid or e.UserID = $userid";
         return $conn->query($sql)->fetch_assoc();
     }
 

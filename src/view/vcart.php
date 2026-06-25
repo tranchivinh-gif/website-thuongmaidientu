@@ -4,6 +4,7 @@
             <td>Chọn</td>
             <td>Tên sản phẩm</td>
             <td>Ảnh</td>
+            <td>Shop</td>
             <td>Số lượng</td>
             <td>Đơn giá</td>
         </tr>

@@ -36,6 +36,13 @@ function renderProductInCart()
                 </a>
             </td>';
 
+        // ảnh shop
+        echo '<td>
+                <a href="?page=product-detail&shopid=' . $product["ShopID"] . '">
+                    <img src="/img/product_img/' . $product["Image"] . '" width="60">
+                </a>
+            </td>';
+
         // số lượng sản phẩm 
         echo '<td>
                 <input type="number"
@@ -68,7 +75,7 @@ function renderProductInCart()
                     onchange="toggleCheckAll(this)">
           </td>';
 
-    echo '<td colspan="2">Tổng Cộng:</td>';
+    echo '<td colspan="3">Tổng Cộng:</td>';
 
     // tổng tiền (readonly)
     echo '<td colspan="2">  
@@ -81,7 +88,7 @@ function renderProductInCart()
     echo '</tr>';
 
     echo '<tr>
-            <td colspan="3">
+            <td colspan="4">
                 <textarea name="txtnote" cols="30" rows="4" placeholder="Nhập ghi chú đơn hàng"></textarea>
             </td>
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 14, 2026 at 04:45 PM
+-- Generation Time: Jun 25, 2026 at 11:38 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -63,7 +63,8 @@ CREATE TABLE `category_product` (
 
 INSERT INTO `category_product` (`CategoryID`, `CategoryName`, `Description`) VALUES
 (0, 'Chưa phân loại', NULL),
-(1, 'Thời trang', NULL);
+(1, 'Thời trang', NULL),
+(2, 'Đồ ăn', NULL);
 
 -- --------------------------------------------------------
 
@@ -123,7 +124,8 @@ CREATE TABLE `order` (
   `OrderDate` datetime DEFAULT NULL,
   `Total` decimal(18,2) DEFAULT NULL,
   `Status` varchar(50) DEFAULT NULL,
-  `ShippingAddress` varchar(255) DEFAULT NULL
+  `ShippingAddress` varchar(255) DEFAULT NULL,
+  `Note` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -137,7 +139,8 @@ CREATE TABLE `order_detail` (
   `ProductID` int(11) NOT NULL,
   `Quantity` int(11) DEFAULT NULL,
   `UnitPrice` decimal(18,2) DEFAULT NULL,
-  `Discount` decimal(5,2) DEFAULT NULL
+  `Discount` decimal(5,2) DEFAULT NULL,
+  `Status` varchar(255) NOT NULL DEFAULT 'đang xử lý'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -181,7 +184,10 @@ CREATE TABLE `product` (
 INSERT INTO `product` (`ProductID`, `CategoryID`, `ShopID`, `ProductName`, `Price`, `Discount`, `Description`, `Image`, `Stock`, `Status`) VALUES
 (1, 1, 1, 'ví dụ 1', 99000.00, 87000.00, '', 'vidu1.png', 10, 1),
 (2, 0, 1, 'ví dụ 2', 190000.00, 99000.00, '', 'vidu2.png', 10, 1),
-(3, 0, 1, 'ví dụ 3', 199000.00, 100000.00, '', 'vidu3.png', 10, 1);
+(3, 0, 1, 'ví dụ 3', 199000.00, 100000.00, '', 'vidu3.png', 10, 1),
+(4, 2, 2, 'ví dụ 4', 69000.00, 40000.00, '', 'vidu4.png', 10, 1),
+(5, 2, 2, 'ví dụ 5', 59000.00, 20000.00, '', 'vidu5.png', 10, 1),
+(6, 0, 2, 'ví dụ 6', 70000.00, 50000.00, 'khá', 'vidu6.png', 10, 1);
 
 -- --------------------------------------------------------
 
@@ -252,7 +258,8 @@ CREATE TABLE `shop` (
 --
 
 INSERT INTO `shop` (`ShopID`, `OwnerID`, `ShopName`, `Description`, `Logo`, `Status`) VALUES
-(1, 4, 'Shop quần áo', NULL, NULL, 1);
+(1, 4, 'Shop quần áo', NULL, NULL, 1),
+(2, 5, 'Shop đồ ăn', NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -281,7 +288,8 @@ INSERT INTO `user` (`UserID`, `RoleID`, `UserName`, `Email`, `Password`, `Image`
 (1, 1, 'tranchivinh', 'vinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 10),
 (2, 2, 'nguyenthuydanchinh', 'chinh@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 16),
 (3, 3, 'nguyenhoangvu', 'vu@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 2),
-(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 33);
+(4, 4, 'huynhhuutuan', 'tuan@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 33),
+(5, 4, 'nguyentiendung', 'dung@gmail.com', '202cb962ac59075b964b07152d234b70', NULL, NULL, NULL, 1, 11);
 
 --
 -- Indexes for dumped tables
@@ -439,7 +447,7 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `review`
@@ -463,13 +471,13 @@ ALTER TABLE `seller_request`
 -- AUTO_INCREMENT for table `shop`
 --
 ALTER TABLE `shop`
-  MODIFY `ShopID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ShopID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
