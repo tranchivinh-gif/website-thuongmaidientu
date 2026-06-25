@@ -33,8 +33,8 @@ if (!$product) {
         <p>Cửa hàng: <?php echo $product["ShopName"]; ?></p>
 
         <p>
-            <img src="<?php echo '/img/logo_img/' . $product["Logo"]; ?>" alt="<?php echo $product["ShopName"]; ?>"
-                style="width:80px;height:auto;">
+            <img src="<?php echo '/img/logo_img/' . (!empty($product["Logo"]) ? $product["Logo"] : 'default.jpg'); ?>"
+                alt="<?php echo $product["ShopName"]; ?>" style="width:80px;height:auto;">
         </p>
 
         <hr>

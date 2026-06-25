@@ -100,6 +100,15 @@ function router()
             include_once __DIR__ . "/../view/vorderdetail.php";
             break;
 
+        case 'order-manager':
+            include_once __DIR__ . "/../view/vordermanage.php";
+            break;
+
+        case 'orderdetail-manager':
+            include_once __DIR__ . "/../view/vorderdetailmanager.php";
+            break;
+
+
         default:
             renderProduct();
     }

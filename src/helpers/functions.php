@@ -18,6 +18,7 @@ function displayMenu()
 
         case 2: // nhân viên
             echo '<li><a href="?page=product-manager">Quản lý sản phẩm</a></li>';
+            echo '<li><a href="?page=order-manager">Quản lý đơn hàng</a></li>';
             break;
 
         case 3: // khách hàng
@@ -29,6 +30,7 @@ function displayMenu()
         case 4: // chủ shop
             echo '<li><a href="?page=employee-manager">Quản lý nhân viên</a></li>';
             echo '<li><a href="?page=product-manager">Quản lý sản phẩm</a></li>';
+            echo '<li><a href="?page=order-manager">Quản lý đơn hàng</a></li>';
             break;
     }
 

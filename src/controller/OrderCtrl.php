@@ -28,4 +28,42 @@ class OrderCtrl
             "orderlist" => $result
         ];
     }
+
+    // hàm lấy tất cả đơn hàng theo shop
+    public function getAllOrderByShopID($shopid)
+    {
+        $orderModel = new Order();
+        $result = $orderModel->getAllOrderByShopID($shopid);
+
+        if (!$result || count($result) == 0) {
+            return [
+                "success" => false,
+                "message" => "Chưa có đơn hàng nào!"
+            ];
+        }
+
+        return [
+            "success" => true,
+            "orderlist" => $result
+        ];
+    }
+
+    // hàm lấy chi tiết đơn hàng theo orderID (controller)
+    public function getOrderDetailByOrderID($orderid, $shopid)
+    {
+        $orderModel = new Order();
+        $result = $orderModel->getOrderDetailByOrderID($orderid, $shopid);
+
+        if (count($result) == 0) {
+            return [
+                "success" => false,
+                "message" => "Không tìm thấy chi tiết đơn hàng!"
+            ];
+        }
+
+        return [
+            "success" => true,
+            "orderdetail" => $result
+        ];
+    }
 }
