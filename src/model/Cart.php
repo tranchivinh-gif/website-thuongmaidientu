@@ -87,7 +87,7 @@ class Cart
         $db = new Database();
         $conn = $db->moKetNoi();
 
-        $sql = "SELECT cd.*, p.ProductName, p.Image  
+        $sql = "SELECT cd.*, p.ProductName, p.Image  , p.ShopID
             FROM cart_detail cd join product p on p.ProductID = cd.ProductID 
             WHERE cd.CartID = $cartID";
 

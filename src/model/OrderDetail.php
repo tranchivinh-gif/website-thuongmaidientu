@@ -43,7 +43,7 @@ class OrderDetail
         if (!$conn) {
             die("Lỗi kết nối database!");
         }
-        $sql = "select * from `order_detail` where OrderID = $orderid";
+        $sql = "select od.*, p.ProductName from `order_detail` od join product p on p.ProductID = od.ProductID where OrderID = $orderid";
         $result = $conn->query($sql);
 
         $data = [];

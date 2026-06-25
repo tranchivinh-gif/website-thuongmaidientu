@@ -98,6 +98,7 @@ function createNewPayment($orderID, $paymentCtrl)
         echo '<script>
                     alert("tạo thanh toán thất bại!");
                 </script>';
+        exit();
     }
 }
 
@@ -175,6 +176,7 @@ function renderOrdersByUser($userid)
         echo "<tr>";
         echo "<td>" . $order["OrderID"] . "</td>";
         echo "<td>" . $order["OrderDate"] . "</td>";
+        echo "<td>" . $order["ShippingAddress"] . "</td>";
         echo "<td>" . number_format($order["Total"]) . " VNĐ</td>";
         echo "<td>" . formatOrderStatus($order["Status"]) . "</td>";
         echo "<td>
@@ -217,8 +219,9 @@ function renderOrderDetail($orderid)
 
     foreach ($details as $item) {
         echo "<tr>";
-        echo "<td>" . $item["ProductID"] . "</td>";
+        echo "<td>" . $item["ProductName"] . "</td>";
         echo "<td>" . $item["Quantity"] . "</td>";
+        echo "<td>" . $item["Status"] . "</td>";
         echo "</tr>";
     }
 }
