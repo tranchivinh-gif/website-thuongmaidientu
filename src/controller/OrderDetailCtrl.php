@@ -28,4 +28,29 @@ class OrderDetailCtrl
             "orderdetaillist" => $result
         ];
     }
+
+    // cập nhật trạng thái chi tiết đơn hàng
+    public function updateStatusOfOrderDetail($status, $orderid, $productid)
+    {
+        $orderdetailModel = new OrderDetail();
+        return $orderdetailModel->updateStatusOfOrderDetail($status, $orderid, $productid);
+    }
+
+    // hàm lấy trạng thái chi tiết 1 đơn hàng để kiểm tra
+    public function getStatusOrderDetailByOrderID($orderid, $productid)
+    {
+        $orderdetailModel = new OrderDetail();
+        $result = $orderdetailModel->getStatusOrderDetailByOrderID($orderid, $productid);
+        if (count($result) == 0) {
+            return [
+                "success" => false,
+                "message" => "lỗi!"
+            ];
+        }
+
+        return [
+            "success" => true,
+            "orderdetaillist" => $result
+        ];
+    }
 }

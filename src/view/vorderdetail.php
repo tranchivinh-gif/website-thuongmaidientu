@@ -1,4 +1,7 @@
-<form method="POST" action="?page=order-detail">
+<?php
+$orderid = $_GET["orderid"];
+?>
+<form method="POST" action="?page=order-detail&orderid=<?php echo $orderid; ?>">
     <table class="product-manager">
         <tr>
             <td>Sản phẩm</td>

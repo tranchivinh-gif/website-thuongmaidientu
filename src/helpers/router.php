@@ -106,6 +106,7 @@ function router()
 
         case 'orderdetail-manager':
             include_once __DIR__ . "/../view/vorderdetailmanager.php";
+            handleChangeStatusOfOrderDetail();
             break;
 
 
