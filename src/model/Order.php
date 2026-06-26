@@ -110,6 +110,8 @@ class Order
         }
 
         $sql = "SELECT 
+                o.OrderID,
+                p.ProductID,
                 p.ProductName, 
                 o.ShippingAddress, 
                 od.Status

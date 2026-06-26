@@ -54,4 +54,42 @@ class OrderDetail
 
         return $data;
     }
+
+    // cập nhật trạng thái chi tiết đơn hàng
+    public function updateStatusOfOrderDetail($status, $orderid, $productid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "update order_detail
+            set Status = '$status'
+            where OrderID = $orderid and ProductID = $productid and Status not in ('completed', 'return')";
+
+        return $conn->query($sql);
+    }
+
+    // hàm lấy trạng thái chi tiết 1 đơn hàng để kiểm tra
+    public function getStatusOrderDetailByOrderID($orderid, $productid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+        $sql = "select Status from `order_detail` where OrderID = $orderid and ProductID = $productid";
+        $result = $conn->query($sql);
+
+        $data = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
 }

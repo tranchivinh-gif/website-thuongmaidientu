@@ -39,4 +39,19 @@ class Payment
 
         return false;
     }
+
+    // hàm lấy thanh toán bằng orderid
+    public function getPaymentByOrderID($orderid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "select count(*) as IsPaid from payment where OrderID = $orderid";
+
+        return $conn->query($sql);
+    }
 }
