@@ -109,6 +109,14 @@ function router()
             handleChangeStatusOfOrderDetail();
             break;
 
+        case 'return':
+            handleReturnOfOrder();
+            include_once __DIR__ . "/../view/vreturn.php";
+            break;
+
+        case 'handlerequest':
+            include_once __DIR__ . "/../view/vhandlerequest.php";
+            break;
 
         default:
             renderProduct();

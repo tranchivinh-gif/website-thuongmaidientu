@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 25, 2026 at 11:38 AM
+-- Generation Time: Jun 27, 2026 at 04:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -88,9 +88,12 @@ CREATE TABLE `comment` (
 CREATE TABLE `customer_request` (
   `RequestID` int(11) NOT NULL,
   `UserID` int(11) DEFAULT NULL,
+  `OrderID` int(11) NOT NULL,
+  `ProductID` int(11) NOT NULL,
   `Title` varchar(255) DEFAULT NULL,
   `Content` varchar(500) DEFAULT NULL,
-  `Status` varchar(50) DEFAULT NULL
+  `Status` varchar(50) NOT NULL DEFAULT 'pending',
+  `Image` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -140,7 +143,7 @@ CREATE TABLE `order_detail` (
   `Quantity` int(11) DEFAULT NULL,
   `UnitPrice` decimal(18,2) DEFAULT NULL,
   `Discount` decimal(5,2) DEFAULT NULL,
-  `Status` varchar(255) NOT NULL DEFAULT 'đang xử lý'
+  `Status` varchar(255) NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -328,7 +331,9 @@ ALTER TABLE `comment`
 --
 ALTER TABLE `customer_request`
   ADD PRIMARY KEY (`RequestID`),
-  ADD KEY `fk_cr_user` (`UserID`);
+  ADD KEY `fk_cr_user` (`UserID`),
+  ADD KEY `OrderID` (`OrderID`),
+  ADD KEY `ProductID` (`ProductID`);
 
 --
 -- Indexes for table `employee`
@@ -507,6 +512,8 @@ ALTER TABLE `comment`
 -- Constraints for table `customer_request`
 --
 ALTER TABLE `customer_request`
+  ADD CONSTRAINT `customer_request_ibfk_1` FOREIGN KEY (`ProductID`) REFERENCES `order_detail` (`ProductID`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `customer_request_ibfk_2` FOREIGN KEY (`OrderID`) REFERENCES `order_detail` (`OrderID`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_cr_user` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`);
 
 --
