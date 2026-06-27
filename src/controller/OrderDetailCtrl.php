@@ -53,4 +53,11 @@ class OrderDetailCtrl
             "orderdetaillist" => $result
         ];
     }
+
+    // cập nhật trạng thái chi tiết đơn hàng đối với hành động trả hàng
+    public function updateStatusOfOrderDetailForRequest($orderid, $productid)
+    {
+        $orderdetailModel = new OrderDetail();
+        return $orderdetailModel->updateStatusOfOrderDetailForRequest($orderid, $productid);
+    }
 }

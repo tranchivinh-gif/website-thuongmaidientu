@@ -92,4 +92,21 @@ class OrderDetail
 
         return $data;
     }
+
+    // cập nhật trạng thái chi tiết đơn hàng đối với hành động trả hàng
+    public function updateStatusOfOrderDetailForRequest($orderid, $productid)
+    {
+        $db = new Database();
+        $conn = $db->moKetNoi();
+
+        if (!$conn) {
+            die("Lỗi kết nối database!");
+        }
+
+        $sql = "update order_detail
+            set Status = 'requested'
+            where OrderID = $orderid and ProductID = $productid and Status not in ('completed', 'return')";
+
+        return $conn->query($sql);
+    }
 }

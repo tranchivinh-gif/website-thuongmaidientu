@@ -5,6 +5,7 @@ include_once __DIR__ . "/../controller/ProductCtrl.php";
 include_once __DIR__ . "/../controller/OrderCtrl.php";
 include_once __DIR__ . "/../controller/OrderDetailCtrl.php";
 include_once __DIR__ . "/../controller/PaymentCtrl.php";
+include_once __DIR__ . "/../controller/RequestCtrl.php";
 
 // hàm tạo hóa đơn và chi tiết hóa đơn
 function handleOrder()
@@ -222,12 +223,52 @@ function handleChangeStatusOfOrderDetailByCustomer($orderDetailCtrl)
 {
     if (isset($_POST["status"]) && $_POST["status"] !== "") {
 
-        if ($orderDetailCtrl->updateStatusOfOrderDetail($_POST["status"], $_POST["orderid"], $_POST["productid"])) {
-            echo '<script>
-                        window.location.href="?page=order-detail&orderid=' . $_POST["orderid"] . '";
+        redictReturnOfOrder();
+
+        // if ($orderDetailCtrl->updateStatusOfOrderDetail($_POST["status"], $_POST["orderid"], $_POST["productid"])) {
+        //     echo '<script>
+        //                 window.location.href="?page=order-detail&orderid=' . $_POST["orderid"] . '";
+        //             </script>';
+        // } else {
+        //     die("loi cap nhat trang thai, sua ngay dong 210, order.php!");
+        // }
+    }
+}
+
+// hàm chuyển tới trang hoàn hàng cho khách hàng
+function redictReturnOfOrder()
+{
+    if ($_POST["status"] == "return") {
+        echo '<script>
+                window.location.href="?page=return&orderid=' . $_POST["orderid"] . '&productid=' . $_POST["productid"] . '";
+            </script>';
+    }
+}
+
+// hàm xử lý hoàn hàng cho khách hàng
+function handleReturnOfOrder()
+{
+    if (isset($_POST["btnreturn"])) {
+        $data = [
+            "userid" => $_SESSION["user"]["UserID"],
+            "orderid" => $_GET["orderid"],
+            "productid" => $_GET["productid"],
+            "title" => "return",
+            "content" => $_POST["txtcontent"],
+            "image" => $_FILES["txtimg"]["name"]
+        ];
+
+        $requestCtrl = new Request();
+
+        if ($requestCtrl->createNewRequest($data)) {
+
+            $orderDetailCtrl = new OrderDetailCtrl();
+
+            if ($orderDetailCtrl->updateStatusOfOrderDetailForRequest($data["orderid"], $data["productid"])) {
+                echo '<script>
+                        window.location.href="?page=order-detail&orderid=' . $data["orderid"] . '";
                     </script>';
-        } else {
-            die("loi cap nhat trang thai, sua ngay dong 210, order.php!");
+            }
         }
     }
 }
@@ -271,10 +312,10 @@ function renderOrderDetailAction($status, $orderid, $productid)
                 </button>
             </form>';
 
-        case "return":
+        case "requested":
             return '
             <button disabled>
-                Đang trả hàng
+                Đang duyệt yêu cầu
             </button>';
 
         case "completed":
@@ -311,7 +352,7 @@ function renderOrderList($shopid)
             <td>{$order["UserID"]}</td>
             <td>" . number_format($order["Total"]) . " VNĐ</td>
             <td>
-                <a href='?page=orderdetail-manager&&orderid={$order["OrderID"]}'>
+                <a href='?page=orderdetail-manager&orderid={$order["OrderID"]}'>
                     Xem chi tiết
                 </a>
             </td>
@@ -340,52 +381,45 @@ function renderOrderDetailList($orderid, $shopid)
         $paymentCtrl = new PaymentCtrl();
         $isPaid = $paymentCtrl->getPaymentByOrderID($item["OrderID"]);
 
-        echo "
-        <tr>
-            <td>{$item["ProductName"]}</td>
+        echo '<tr>';
 
-            <td>{$item["ShippingAddress"]}</td>
+        echo '<td>' . $item["ProductName"] . '</td>';
+        echo '<td>' . $item["ShippingAddress"] . '</td>';
 
-             <td>" . ($isPaid["IsPaid"] == 1 ? "Đã thanh toán" : "Chưa thanh toán") . "</td>
+        echo '<td>';
+        echo ($isPaid["IsPaid"] == 1 ? 'Đã thanh toán' : 'Chưa thanh toán');
+        echo '</td>';
 
-            <td>
-                <form method='POST' action = '?page=orderdetail-manager&&orderid={$item["OrderID"]}'>
-                    <input type='hidden'
-                           name='orderid'
-                           value='{$item["OrderID"]}'>
+        echo '<td>';
 
-                    <input type='hidden'
-                           name='productid'
-                           value='{$item["ProductID"]}'>
+        if ($item["Status"] == "requested") {
+            echo '<form action="?page=handlerequest" method = "POST">';
+            echo '<input type="hidden" name="orderid" value="' . $item["OrderID"] . '">';
+            echo '<input type="hidden" name="productid" value="' . $item["ProductID"] . '">';
+            echo  '<button name = "btnrequest">xử lý yêu cầu</button>';
 
-                    <select name='status' " . ($item["Status"] == "completed" ? "disabled" : "") . "
-                            onchange='if(confirm(\"Xác nhận đổi trạng thái?\")) this.form.submit(); else location.reload();'>
+            echo  '</form>';
+        } else {
+            echo '<form method="POST" action="?page=orderdetail-manager&orderid=' . $item["OrderID"] . '">';
 
-                        <option disabled value='pending'
-                        " . ($item["Status"] == "pending" ? "selected" : "") . ">
-                        Chờ xử lý
-                        </option>
+            echo '<input type="hidden" name="orderid" value="' . $item["OrderID"] . '">';
+            echo '<input type="hidden" name="productid" value="' . $item["ProductID"] . '">';
 
-                        <option value='shipping' " . ($item["Status"] == "return" ? "disabled" : "") . "
-                        " . ($item["Status"] == "shipping" ? "selected" : "") . ">
-                        Giao hàng
-                        </option>
+            echo '<select name="status" ' . ($item["Status"] == "completed" ? 'disabled' : '') . ' onchange=\'if(confirm("Xác nhận đổi trạng thái?")) this.form.submit(); else location.reload();\'>';
 
-                        <option value='return' " . ($item["Status"] == "pending" ? "disabled" : "") . "
-                        " . ($item["Status"] == "return" ? "selected" : "") . ">
-                        Hoàn hàng
-                        </option>
+            echo '<option disabled value="pending" ' . ($item["Status"] == "pending" ? 'selected' : '') . '>Chờ xử lý</option>';
+            echo '<option value="shipping" ' . ($item["Status"] == "return" || $item["Status"] == "requested" ? 'disabled' : '') . ' ' . ($item["Status"] == "shipping" ? 'selected' : '') . '>Giao hàng</option>';
+            echo '<option disabled value="completed" ' . ($item["Status"] == "completed" ? 'selected' : '') . '>Hoàn thành</option>';
 
-                        <option disabled value='completed'
-                        " . ($item["Status"] == "completed" ? "selected" : "") . ">
-                        Hoàn thành
-                        </option>
+            echo '</select>';
 
-                    </select>
-                </form>
-            </td>
-        </tr>
-        ";
+            echo '</form>';
+        }
+
+
+        echo '</td>';
+
+        echo '</tr>';
     }
 }
 
@@ -394,14 +428,20 @@ function handleChangeStatusOfOrderDetail()
 {
     $orderdetailCtrl = new OrderDetailCtrl();
 
+    if (isset($_POST["btnrequest"])) {
+        echo '
+    <script>
+        window.location.href="?page=orderdetail-manager&&orderid=' . $_POST["orderid"] . '";
+    </script>';
+    }
+
     if (!isset($_POST["status"])) {
         return;
     }
 
-    if ($_POST["status"] === "completed") {
-        return;
-    }
-
+    // if ($_POST["status"] === "completed") {
+    //     return;
+    // }
 
     $orderdetailCtrl->updateStatusOfOrderDetail(
         $_POST["status"],
